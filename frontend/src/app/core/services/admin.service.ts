@@ -4,9 +4,10 @@ import { Observable } from 'rxjs';
 
 import type { Asta } from '../../models/asta.model';
 import type { Recensione } from '../../models/recensione.model';
+import { environment } from '../../../environments/environment';
 import type { Utente } from '../../models/utente.model';
 
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = environment.apiUrl;
 
 /** Chiamate /api/admin/... */
 @Injectable({ providedIn: 'root' })

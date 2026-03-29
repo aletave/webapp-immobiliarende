@@ -2,9 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../../environments/environment';
 import type { Recensione } from '../../models/recensione.model';
 
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = environment.apiUrl;
 
 /** API recensioni (pubbliche + CRUD acquirente). */
 @Injectable({ providedIn: 'root' })

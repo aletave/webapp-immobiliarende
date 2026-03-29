@@ -2,9 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../../environments/environment';
 import type { Asta } from '../../models/asta.model';
 
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = environment.apiUrl;
 
 /** API aste: lettura, creazione venditore, offerte acquirente. */
 @Injectable({ providedIn: 'root' })

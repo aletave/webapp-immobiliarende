@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import type { Utente } from '../../models/utente.model';
 
 /** Base URL del backend Spring Boot (CORS abilitato lato server). */
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = environment.apiUrl;
 
 /** Chiave localStorage per il JWT (stesso valore usato dall'interceptor). */
 export const AUTH_TOKEN_STORAGE_KEY = 'auth_token';

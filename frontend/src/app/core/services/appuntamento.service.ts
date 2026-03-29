@@ -2,9 +2,10 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, catchError, of, throwError } from 'rxjs';
 
+import { environment } from '../../../environments/environment';
 import type { Appuntamento } from '../../models/appuntamento.model';
 
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = environment.apiUrl;
 
 @Injectable({ providedIn: 'root' })
 export class AppuntamentoService {

@@ -2,10 +2,11 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../../environments/environment';
 import type { Annuncio, AnnuncioRequest } from '../../models/annuncio.model';
 
 /** Base URL del backend (stesso host usato da AuthService). */
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = environment.apiUrl;
 
 /** Filtri catalogo annunci (nomi allineati al backend). */
 export interface FiltriAnnunci {
