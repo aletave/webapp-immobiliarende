@@ -1,0 +1,356 @@
+.dettaglio-annuncio {
+  max-width: 860px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.dettaglio-section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.25rem, 3.5vw, 1.6rem);
+  color: var(--color-text);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem !important;
+  border-bottom: 1px solid var(--color-border);
+  text-decoration: none !important;
+}
+
+.dettaglio-property-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(1.85rem, 5.5vw, 2.8rem);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--color-text);
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.dettaglio-descrizione {
+  margin-bottom: 1.5rem;
+}
+
+.dettaglio-info-label {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+  margin-bottom: 0.25rem !important;
+}
+
+.dettaglio-info-value {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+.dettaglio-prezzo-block {
+  margin-top: 0;
+}
+
+.dettaglio-prezzo__vecchio {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  display: inline;
+}
+
+.dettaglio-prezzo__attuale {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: clamp(1.65rem, 4.5vw, 2.2rem);
+  color: var(--color-accent);
+  line-height: 1.2;
+}
+
+.dettaglio-badge-tipo {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.dettaglio-badge-tipo--vendita {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.dettaglio-badge-tipo--affitto {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.dettaglio-carousel-wrap {
+  border-radius: clamp(12px, 3vw, 20px);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  /* Altezza fluida: mobile compatto, desktop fino a 480px */
+  height: clamp(200px, min(56vw, 72vh), 480px);
+  background: var(--color-surface-alt);
+}
+
+.dettaglio-carousel-wrap .carousel {
+  height: 100%;
+}
+
+.dettaglio-carousel-wrap .carousel-inner {
+  height: 100%;
+}
+
+.dettaglio-carousel-wrap .carousel-item {
+  height: clamp(200px, min(56vw, 72vh), 480px);
+}
+
+.carousel-img {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+.dettaglio-carousel-wrap--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dettaglio-placeholder-svg {
+  color: var(--color-secondary);
+
+  svg {
+    width: 4rem;
+    height: 4rem;
+  }
+}
+
+.dettaglio-carousel-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9) !important;
+  opacity: 1;
+  filter: none;
+
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    filter: invert(1);
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  &:hover {
+    background: #fff !important;
+  }
+}
+
+.dettaglio-carousel-wrap .carousel-control-prev {
+  left: clamp(0.35rem, 2vw, 1rem);
+}
+
+.dettaglio-carousel-wrap .carousel-control-next {
+  right: clamp(0.35rem, 2vw, 1rem);
+}
+
+@media (max-width: 575.98px) {
+  .dettaglio-carousel-btn {
+    width: 2.1rem;
+    height: 2.1rem;
+  }
+}
+
+.dettaglio-map {
+  border-radius: 16px;
+  overflow: hidden;
+  height: clamp(220px, 42vh, 340px);
+  box-shadow: var(--shadow-md);
+
+  iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+  }
+}
+
+.dettaglio-contatto-section {
+  background: var(--color-surface-alt);
+  border-radius: 16px;
+  padding: clamp(1.25rem, 4vw, 2rem);
+}
+
+.dettaglio-contatto-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+}
+
+.dettaglio-contatto-group {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem 0.85rem;
+  flex-wrap: wrap;
+}
+
+.dettaglio-contatto-group__label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-text-muted);
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.dettaglio-contatto-group__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dettaglio-contatto-toolbar__sep {
+  width: 1px;
+  align-self: stretch;
+  min-height: 2.5rem;
+  background: var(--color-border);
+  flex-shrink: 0;
+}
+
+/* Icona + CTA testuale (niente etichetta «Email») */
+.dettaglio-contatto-mail-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  line-height: 1.2;
+  padding: 0.45rem 0.85rem;
+
+  .dettaglio-contatto-icon {
+    flex-shrink: 0;
+  }
+}
+
+.dettaglio-contatto-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.65rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  line-height: 1;
+}
+
+.dettaglio-contatto-icon-btn--wa {
+  border-color: rgba(37, 211, 102, 0.55);
+  color: #128c7e;
+
+  &:hover,
+  &:focus-visible {
+    border-color: #25d366;
+    background: rgba(37, 211, 102, 0.08);
+    color: #075e54;
+  }
+}
+
+.dettaglio-contatto-icon {
+  display: block;
+  width: 1.35rem;
+  height: 1.35rem;
+  flex-shrink: 0;
+}
+
+.dettaglio-contatto-icon--fb {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.dettaglio-contatto-icon--wa {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+@media (max-width: 575.98px) {
+  .dettaglio-contatto-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .dettaglio-contatto-toolbar__sep {
+    width: 100%;
+    height: 1px;
+    min-height: 0;
+    align-self: stretch;
+  }
+
+  .dettaglio-contatto-group {
+    justify-content: space-between;
+  }
+
+  .dettaglio-contatto-group__actions {
+    justify-content: flex-end;
+  }
+}
+
+.dettaglio-contatto-form-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: var(--color-text);
+}
+
+.dettaglio-contatto-card {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.dettaglio-form-label {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+.dettaglio-form-input {
+  border: none;
+  border-bottom: 2px solid var(--color-border);
+  border-radius: 0;
+  padding: 0.75rem 0;
+  background: transparent;
+  box-shadow: none !important;
+
+  &:focus {
+    border-bottom-color: var(--color-accent);
+    outline: none;
+    background: transparent;
+  }
+}
+
+.dettaglio-subcard {
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.dettaglio-stelle {
+  color: var(--color-accent);
+  letter-spacing: 0.05em;
+}

@@ -1,0 +1,131 @@
+.mappa-annunci {
+  min-height: 100%;
+  background: var(--color-surface);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.mappa-annunci__inner {
+  padding-bottom: 0.5rem;
+}
+
+.mappa-annunci__title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  color: var(--color-text);
+  margin-bottom: 0.35rem;
+}
+
+.mappa-annunci__subtitle {
+  font-family: 'Outfit', system-ui, sans-serif;
+  font-size: 0.95rem;
+}
+
+.mappa-annunci__map-wrap {
+  position: relative;
+}
+
+.mappa-annunci__search {
+  position: absolute;
+  z-index: 500;
+  top: 12px;
+  right: 12px;
+  left: auto;
+  width: min(320px, calc(100% - 24px));
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(28, 25, 23, 0.08);
+  font-family: 'Outfit', system-ui, sans-serif;
+}
+
+.mappa-annunci__search-title {
+  font-family: 'Outfit', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.7rem;
+  color: var(--color-accent);
+  margin: 0 0 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.mappa-annunci__search-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  label {
+    font-size: 0.8rem;
+    color: var(--color-text-muted, #78716c);
+    margin: 0;
+  }
+
+  select {
+    font-size: 0.9rem;
+    padding: 0.45rem 0.6rem;
+    border-radius: 8px;
+    border: 1px solid rgba(28, 25, 23, 0.15);
+    background: #fff;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+}
+
+.mappa-annunci__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin: 0.65rem 0 0;
+  padding: 0;
+  font-size: 0.78rem;
+  color: var(--color-text-muted, #78716c);
+}
+
+.mappa-annunci__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.mappa-annunci__pin-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+
+.mappa-annunci__pin-dot--vendita {
+  background: #b45309;
+}
+
+.mappa-annunci__pin-dot--affitto {
+  background: #0d9488;
+}
+
+.mappa-annunci__map {
+  border-radius: clamp(12px, 3vw, 16px);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  /* Altezza adattiva: non sotto ~240px; dvh dove supportato (barra indirizzi mobile) */
+  height: max(240px, min(75vh, calc(100vh - 220px)));
+  height: max(240px, min(75vh, calc(100dvh - 220px)));
+  min-height: 220px;
+}
+
+@media (max-width: 575.98px) {
+  .mappa-annunci__map {
+    height: max(220px, min(68vh, calc(100vh - 200px)));
+    height: max(220px, min(68vh, calc(100dvh - 200px)));
+  }
+}
+
+// Leaflet: nasconde il bordo grigio del divIcon di default
+::ng-deep .mappa-annunci__div-icon {
+  background: transparent !important;
+  border: none !important;
+}

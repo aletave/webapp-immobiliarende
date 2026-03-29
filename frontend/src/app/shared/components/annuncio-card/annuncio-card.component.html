@@ -1,0 +1,71 @@
+<a
+  class="card h-100 annuncio-card text-decoration-none text-reset d-block"
+  [routerLink]="['/annunci', annuncio.id]"
+  role="link"
+>
+  <div class="annuncio-card__media">
+    @if (annuncio.foto.length > 0 && annuncio.foto[0].url) {
+      <img [src]="annuncio.foto[0].url" class="annuncio-card__img" alt="" loading="lazy" />
+    } @else {
+      <div class="annuncio-card__placeholder" aria-hidden="true">
+        <svg
+          class="annuncio-card__placeholder-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.25"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5Z" />
+          <path d="M9 21V12h6v9" />
+        </svg>
+      </div>
+    }
+  </div>
+  <div class="card-body d-flex flex-column annuncio-card__body">
+    <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+      <h2 class="h6 card-title mb-0 text-truncate annuncio-card__title">{{ annuncio.titolo }}</h2>
+      @if (annuncio.tipo === 'VENDITA') {
+        <span class="badge annuncio-badge-tipo annuncio-badge-tipo--vendita text-uppercase flex-shrink-0">{{
+          annuncio.tipo
+        }}</span>
+      } @else {
+        <span class="badge annuncio-badge-tipo annuncio-badge-tipo--affitto text-uppercase flex-shrink-0">{{
+          annuncio.tipo
+        }}</span>
+      }
+    </div>
+
+    <span class="annuncio-card__categoria mb-2">{{ annuncio.categoria.split('_').join(' ') }}</span>
+
+    <div class="mb-2 d-flex flex-wrap align-items-baseline gap-2">
+      @if (haPrezzoPrecedente()) {
+        <span class="text-decoration-line-through annuncio-card__prezzo-vecchio">
+          {{ annuncio.prezzoPrecedente | number: '1.0-2' }} €
+        </span>
+      }
+      <span class="annuncio-card__prezzo">{{ annuncio.prezzo | number: '1.0-2' }} €</span>
+      @if (annuncio.astaInCorso === true) {
+        <span class="annuncio-card__asta-label">Asta in corso</span>
+      }
+      @if (ribassoTemporaneoAttivo()) {
+        <span class="badge bg-warning text-dark annuncio-card__promo-badge" title="Promozione a tempo limitato">
+          Promo fino al {{ annuncio.ribassoFine | date: 'short' }}
+        </span>
+      }
+    </div>
+
+    <p class="annuncio-card__superficie mb-2">
+      <span class="annuncio-card__label">Superficie:</span> {{ annuncio.mq }} m²
+    </p>
+
+    <div class="annuncio-card__footer small mt-auto">
+      <span class="annuncio-card__seller">
+        <span class="annuncio-card__seller-di">di</span>
+        <span class="annuncio-card__venditore text-truncate d-inline-block align-bottom">{{ nomeVenditoreCompleto() }}</span>
+      </span>
+    </div>
+  </div>
+</a>

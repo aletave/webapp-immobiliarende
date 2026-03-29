@@ -1,0 +1,427 @@
+.dashboard-admin__page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+
+.dashboard-admin__header {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 1rem;
+}
+
+/** Blocco «I miei annunci» subito sotto il benvenuto (admin con annunci da venditore). */
+.dashboard-admin__miei-annunci-top {
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dashboard-admin__title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: 2.5rem;
+  color: var(--color-primary);
+}
+
+.dashboard-admin__subtitle {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.02em;
+}
+
+.dashboard-admin__chart-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 1.1rem;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+}
+
+.dashboard-admin__section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 1.6rem;
+  color: var(--color-primary);
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0.5rem;
+  margin: 2.5rem 0 1.25rem;
+}
+
+/** Intestazione sezione con titolo + pulsante Mostra/Nascondi (grafici e card statistiche restano sempre visibili). */
+.dashboard-admin__section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0.5rem;
+  margin: 2.5rem 0 1.25rem;
+
+  .dashboard-admin__section-title--inline {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin: 0;
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.dashboard-admin__section-toggle {
+  flex-shrink: 0;
+}
+
+.admin-stat-card {
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  background: #fff;
+  border: none;
+  transition: var(--transition);
+
+  .card-body {
+    padding: 1.5rem 2rem;
+  }
+}
+
+.admin-stat-card--utenti {
+  border-left: 4px solid var(--color-accent);
+}
+
+.admin-stat-card--annunci {
+  border-left: 4px solid var(--color-primary);
+}
+
+.admin-stat-card--aste {
+  border-left: 4px solid #d97706;
+}
+
+.admin-stat-card--recensioni {
+  border-left: 4px solid #059669;
+}
+
+.admin-stat-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.admin-stat-card__label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.admin-stat-card__value {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--color-primary);
+}
+
+.dashboard-admin {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Evita che le colonne Bootstrap (flex) spingano la pagina oltre il viewport */
+.dashboard-admin .row > [class*='col-'] {
+  min-width: 0;
+}
+
+.chart-card {
+  min-width: 0;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  border: none;
+  padding: 1.5rem;
+}
+
+.chart-card canvas {
+  display: block;
+  max-width: 100%;
+  max-height: 280px;
+}
+
+.dashboard-admin__nuovi-annunci-notifica {
+  background: rgba(13, 110, 253, 0.08);
+  border-left: 4px solid var(--color-primary) !important;
+  border-radius: 12px;
+}
+
+.dashboard-admin__table tbody tr.dashboard-admin__row--nuovo,
+.dashboard-admin__table tbody tr.dashboard-admin__row--nuovo:hover {
+  background-color: rgba(13, 110, 253, 0.1) !important;
+}
+
+.badge-role-admin {
+  background: #1c1917 !important;
+  color: #fff !important;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.65rem;
+  border-radius: 6px;
+  padding: 3px 10px;
+  letter-spacing: 0.05em;
+}
+
+.badge-role-venditore {
+  background: #b45309 !important;
+  color: #fff !important;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.65rem;
+  border-radius: 6px;
+  padding: 3px 10px;
+  letter-spacing: 0.05em;
+}
+
+.badge-role-acquirente {
+  background: #059669 !important;
+  color: #fff !important;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.65rem;
+  border-radius: 6px;
+  padding: 3px 10px;
+  letter-spacing: 0.05em;
+}
+
+.dashboard-admin__table-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.dashboard-admin__table {
+  --bs-table-bg: transparent;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: none;
+}
+
+.dashboard-admin__table thead th {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+  border-bottom: 2px solid var(--color-border);
+  padding: 0.875rem 1.25rem;
+}
+
+.dashboard-admin__table tbody tr:nth-child(odd) {
+  background-color: var(--color-surface);
+}
+
+.dashboard-admin__table tbody tr:nth-child(even) {
+  background-color: #fff;
+}
+
+.dashboard-admin__table tbody tr {
+  transition: background var(--transition-fast);
+}
+
+.dashboard-admin__table tbody tr:hover {
+  background-color: var(--color-accent-light) !important;
+}
+
+.dashboard-admin__table td,
+.dashboard-admin__table th {
+  padding: 1rem 1.25rem;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dashboard-admin .table-responsive {
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.dashboard-admin__td--testo {
+  vertical-align: top;
+}
+
+/* Testo recensione: intero visibile, a capo su desktop e mobile */
+.dashboard-admin__cell-value--testo {
+  display: block;
+  max-width: none;
+  white-space: normal;
+  word-break: break-word;
+  overflow: visible;
+  line-height: 1.45;
+}
+
+@media (min-width: 768px) {
+  .dashboard-admin__td--azioni {
+    white-space: nowrap;
+  }
+}
+
+.dashboard-admin__row-actions .dropdown-menu {
+  min-width: 12.5rem;
+  z-index: 1050;
+}
+
+.dashboard-admin__dropdown-btn {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400;
+  font-size: 0.875rem;
+  border-radius: 8px;
+}
+
+.dashboard-admin__dropdown-menu {
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 0;
+
+  .dropdown-item {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+  }
+
+  .dropdown-item.text-danger {
+    color: #dc2626 !important;
+  }
+}
+
+.dashboard-admin__aste-link {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.dashboard-admin__aste-link:hover {
+  text-decoration: underline;
+}
+
+.dashboard-admin .dropdown-toggle.btn-sm {
+  min-width: 5rem;
+  border-radius: 8px;
+  font-weight: 400;
+  transition: var(--transition);
+}
+
+@media (max-width: 767.98px) {
+  .dashboard-admin__page {
+    padding: 1.5rem 1rem;
+  }
+
+  .dashboard-admin__title {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+  }
+
+  .admin-stat-card__value {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+
+  /* Niente scroll orizzontale: tabella → schede impilate (stesso schema dashboard venditore) */
+  .dashboard-admin__table-card .table-responsive {
+    overflow-x: visible;
+  }
+
+  .dashboard-admin__table thead {
+    display: none;
+  }
+
+  .dashboard-admin__table tbody tr.dashboard-admin__row {
+    display: block;
+    margin-bottom: 1rem;
+    background: #fff !important;
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .dashboard-admin__table tbody tr.dashboard-admin__row:last-child {
+    margin-bottom: 0;
+  }
+
+  .dashboard-admin__table tbody tr.dashboard-admin__row:hover {
+    background-color: #fff !important;
+  }
+
+  .dashboard-admin__table tbody tr.dashboard-admin__row.dashboard-admin__row--nuovo,
+  .dashboard-admin__table tbody tr.dashboard-admin__row.dashboard-admin__row--nuovo:hover {
+    background: rgba(13, 110, 253, 0.1) !important;
+  }
+
+  .dashboard-admin__td {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem !important;
+    border-bottom: 1px solid var(--color-border) !important;
+    text-align: right !important;
+    vertical-align: top;
+  }
+
+  .dashboard-admin__td:last-child {
+    border-bottom: none !important;
+  }
+
+  .dashboard-admin__td::before {
+    content: attr(data-label);
+    flex: 0 0 auto;
+    max-width: 42%;
+    padding-right: 0.5rem;
+    text-align: left;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+    padding-top: 0.2rem;
+  }
+
+  .dashboard-admin__cell-value {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    text-align: right;
+    word-break: break-word;
+  }
+
+  .dashboard-admin__cell-value--actions {
+    display: flex;
+    justify-content: flex-end;
+    flex: 1 1 auto;
+  }
+
+  .dashboard-admin__td--azioni .dashboard-admin__row-actions {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .dashboard-admin__td--azioni .dashboard-admin__dropdown-btn {
+    width: 100%;
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .dashboard-admin__table td.text-end,
+  .dashboard-admin__table th.text-end {
+    white-space: normal;
+  }
+}

@@ -1,0 +1,131 @@
+<div class="home-page">
+  <section class="home-hero" aria-label="Introduzione">
+    <div class="home-hero__noise" aria-hidden="true"></div>
+    <div class="container position-relative">
+      <div class="home-hero__content text-center text-white animate-fadeup">
+        <h1 class="home-hero__title">
+          <span class="home-hero__title-line">Trova l'immobile</span>
+          <span class="home-hero__title-line home-hero__title-line--italic">che fa per te</span>
+        </h1>
+        <p class="home-hero__subtitle">
+          Annunci di case in affitto e compravendita a Rende e in provincia di Cosenza: filtri, ordinamento e ricerca
+          sulla mappa.
+        </p>
+      </div>
+    </div>
+    <div class="container home-hero__filters-wrap">
+      <section class="filter-card filter-card--collapsible animate-fadeup" aria-label="Filtri di ricerca">
+        <p class="filter-label d-none d-md-block">CERCA IMMOBILI</p>
+
+        <button
+          type="button"
+          class="filter-dropdown-toggle d-md-none"
+          data-bs-toggle="collapse"
+          data-bs-target="#home-filters-collapse"
+          aria-expanded="false"
+          aria-controls="home-filters-collapse"
+        >
+          <span class="filter-dropdown-toggle__label">Cerca immobili</span>
+          <span class="filter-dropdown-toggle__chevron" aria-hidden="true"></span>
+        </button>
+
+        <div id="home-filters-collapse" class="collapse d-md-block">
+          <div class="filter-row">
+            <div class="filter-item">
+              <label for="filtro-tipo">Tipo</label>
+              <select id="filtro-tipo" [(ngModel)]="filterTipo">
+                <option value="">Tutti</option>
+                <option value="VENDITA">VENDITA</option>
+                <option value="AFFITTO">AFFITTO</option>
+              </select>
+            </div>
+
+            <div class="filter-divider" aria-hidden="true"></div>
+
+            <div class="filter-item">
+              <label for="filtro-categoria">Categoria</label>
+              <select id="filtro-categoria" [(ngModel)]="filterCategoria">
+                <option value="">Tutti</option>
+                <option value="APPARTAMENTO">APPARTAMENTO</option>
+                <option value="VILLA">VILLA</option>
+                <option value="BOX">BOX</option>
+                <option value="TERRENO">TERRENO</option>
+              </select>
+            </div>
+
+            <div class="filter-divider" aria-hidden="true"></div>
+
+            <div class="filter-item">
+              <label for="filtro-ordine">Ordinamento</label>
+              <select id="filtro-ordine" [(ngModel)]="filterOrdine">
+                <option value="prezzo-asc">Prezzo crescente</option>
+                <option value="prezzo-desc">Prezzo decrescente</option>
+                <option value="mq-asc">Mq crescente</option>
+                <option value="mq-desc">Mq decrescente</option>
+              </select>
+            </div>
+
+            <div class="filter-divider" aria-hidden="true"></div>
+
+            <div class="filter-actions">
+              <button type="button" class="btn-cerca" (click)="cerca()">Cerca</button>
+              <a
+                routerLink="/mappa"
+                [queryParams]="filterTipo ? { tipo: filterTipo } : {}"
+                class="btn-mappa"
+                >Cerca su mappa</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <div class="container py-4 py-md-5 home-listings">
+    <h2 class="home-listings__title">Annunci attivi</h2>
+    @if (annunci.length === 0) {
+      <p class="text-center text-muted py-5 mb-0" role="status">Nessun annuncio trovato</p>
+    } @else {
+      <div class="row g-4">
+        @for (a of annunci; track a.id; let idx = $index) {
+          <div
+            class="col-12 col-md-6 col-lg-4"
+            [ngClass]="{
+              'animate-fadeup delay-1': idx === 0,
+              'animate-fadeup delay-2': idx === 1,
+              'animate-fadeup delay-3': idx === 2,
+              'animate-fadeup delay-4': idx >= 3
+            }"
+          >
+            <app-annuncio-card [annuncio]="a" />
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  @if (mostraTornaSu) {
+    <button
+      type="button"
+      class="home-torna-su"
+      (click)="tornaSu()"
+      aria-label="Torna su in cima alla pagina"
+    >
+      <svg
+        class="home-torna-su__icon"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="m18 15-6-6-6 6" />
+      </svg>
+      <span class="visually-hidden">Torna su</span>
+    </button>
+  }
+</div>

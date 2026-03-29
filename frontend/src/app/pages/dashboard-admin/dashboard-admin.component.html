@@ -1,0 +1,535 @@
+<div class="dashboard-admin animate-fadeup">
+  <div class="dashboard-admin__page">
+    <header class="mb-4 dashboard-admin__header">
+      <h1 class="mb-2 dashboard-admin__title">Benvenuto {{ nomeBenvenuto }}</h1>
+      <p class="dashboard-admin__subtitle mb-0">
+        Dashboard amministratore — Utenti, annunci, aste e moderazione contenuti
+      </p>
+    </header>
+
+    @if (messaggio) {
+      <p class="alert alert-success py-2">{{ messaggio }}</p>
+    }
+    @if (errore) {
+      <p class="alert alert-danger py-2">{{ errore }}</p>
+    }
+
+    @if (loading) {
+      <p class="text-muted">Caricamento dati…</p>
+    } @else {
+      @if (mieiAnnunci.length > 0) {
+        <section class="mb-4 dashboard-admin__miei-annunci-top" aria-labelledby="adm-miei-annunci-top">
+          <h2 id="adm-miei-annunci-top" class="h5 mb-2 dashboard-admin__chart-title">I miei annunci</h2>
+          <p class="small text-muted mb-0">
+            Stessa gestione della dashboard venditore: scegli un’azione oppure
+            <a routerLink="/dashboard/venditore" class="dashboard-admin__aste-link"
+              >apri la dashboard venditore</a
+            >
+            per il pannello completo.
+          </p>
+        </section>
+      }
+
+      <section class="row g-3 mb-4 admin-stats" aria-label="Riepilogo piattaforma">
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="card admin-stat-card border-0 h-100 admin-stat-card--utenti">
+            <div class="card-body">
+              <p class="admin-stat-card__label mb-0">Utenti totali</p>
+              <p class="admin-stat-card__value mb-0">{{ utenti.length }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="card admin-stat-card border-0 h-100 admin-stat-card--annunci">
+            <div class="card-body">
+              <p class="admin-stat-card__label mb-0">Annunci totali</p>
+              <p class="admin-stat-card__value mb-0">{{ annunci.length }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="card admin-stat-card border-0 h-100 admin-stat-card--aste">
+            <div class="card-body">
+              <p class="admin-stat-card__label mb-0">Aste attive (record)</p>
+              <p class="admin-stat-card__value mb-0">{{ aste.length }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="card admin-stat-card border-0 h-100 admin-stat-card--recensioni">
+            <div class="card-body">
+              <p class="admin-stat-card__label mb-0">Recensioni totali</p>
+              <p class="admin-stat-card__value mb-0">{{ recensioni.length }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="row g-4 mb-4" aria-label="Grafici statistiche annunci">
+        <div class="col-12 col-md-6">
+          <div class="chart-card">
+            <h3 class="dashboard-admin__chart-title">Annunci per categoria</h3>
+            <canvas #canvasCategoria height="220"></canvas>
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="chart-card">
+            <h3 class="dashboard-admin__chart-title">Vendita vs Affitto</h3>
+            <canvas #canvasTipo height="220"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-5 dashboard-admin__section" aria-labelledby="adm-appuntamenti-recenti">
+        <div class="dashboard-admin__section-head">
+          <h2 id="adm-appuntamenti-recenti" class="dashboard-admin__section-title dashboard-admin__section-title--inline">
+            Appuntamenti recenti
+          </h2>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary dashboard-admin__section-toggle"
+            (click)="sezioneAppuntamentiAperta = !sezioneAppuntamentiAperta"
+            [attr.aria-expanded]="sezioneAppuntamentiAperta"
+            aria-controls="adm-panel-appuntamenti"
+          >
+            {{ sezioneAppuntamentiAperta ? 'Nascondi' : 'Mostra' }}
+          </button>
+        </div>
+        <div id="adm-panel-appuntamenti" [class.d-none]="!sezioneAppuntamentiAperta">
+          <p class="small text-muted mb-3">
+            Richieste di visita sulla piattaforma (stessa API della dashboard venditore: per l’admin è l’elenco
+            completo). Qui sono mostrate le ultime {{ maxAppuntamentiRecenti }} per data.
+            @if (appuntamentiTotalCount > maxAppuntamentiRecenti) {
+              <span class="d-block mt-1">Totale in piattaforma: {{ appuntamentiTotalCount }}.</span>
+            }
+          </p>
+          @if (erroreAppuntamento) {
+            <p class="text-danger small mb-3 mb-0">{{ erroreAppuntamento }}</p>
+          }
+          @if (appuntamentiRecenti.length === 0) {
+            <p class="text-muted small mb-0">Nessuna richiesta di visita.</p>
+          } @else {
+            <div class="dashboard-admin__table-card">
+              <div class="table-responsive">
+                <table class="table table-sm align-middle mb-0 dashboard-admin__appuntamenti-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Annuncio</th>
+                      <th scope="col">Acquirente</th>
+                      <th scope="col">Richiesta</th>
+                      <th scope="col">Stato</th>
+                      <th scope="col" class="text-end">Azione</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (ap of appuntamentiRecenti; track ap.id) {
+                      <tr>
+                        <td>
+                          @if (ap.annuncioId != null) {
+                            <a [routerLink]="['/annunci', ap.annuncioId]" class="dashboard-admin__aste-link">{{
+                              ap.titoloAnnuncio?.trim() ? ap.titoloAnnuncio : 'Annuncio #' + ap.annuncioId
+                            }}</a>
+                          } @else {
+                            <span>—</span>
+                          }
+                        </td>
+                        <td>{{ nomeAcquirenteAppuntamento(ap) }}</td>
+                        <td>
+                          <time [attr.datetime]="ap.createdAt">{{ ap.createdAt | date: 'short' }}</time>
+                        </td>
+                        <td>
+                          @if (ap.stato === 'PENDING') {
+                            <span class="badge text-bg-warning text-dark">In attesa</span>
+                          } @else if (ap.stato === 'RIFIUTATO') {
+                            <span class="badge text-bg-secondary">Rifiutata</span>
+                          } @else {
+                            <span class="badge text-bg-success">Completata</span>
+                          }
+                        </td>
+                        <td class="text-end">
+                          @if (ap.stato === 'PENDING') {
+                            <div class="d-inline-flex flex-wrap gap-1 justify-content-end">
+                              <button
+                                type="button"
+                                class="btn btn-sm btn-primary"
+                                (click)="segnaVisitaCompletata(ap)"
+                                [disabled]="completaAppuntamentoId === ap.id || rifiutaAppuntamentoId === ap.id"
+                              >
+                                @if (completaAppuntamentoId === ap.id) {
+                                  <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                                } @else {
+                                  Segna completata
+                                }
+                              </button>
+                              <button
+                                type="button"
+                                class="btn btn-sm btn-outline-danger"
+                                (click)="segnaVisitaRifiutata(ap)"
+                                [disabled]="completaAppuntamentoId === ap.id || rifiutaAppuntamentoId === ap.id"
+                              >
+                                @if (rifiutaAppuntamentoId === ap.id) {
+                                  <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                                } @else {
+                                  Rifiuta
+                                }
+                              </button>
+                            </div>
+                          } @else {
+                            <span class="text-muted small">—</span>
+                          }
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+
+      @if (nuoviAnnunciCount > 0) {
+        <div
+          class="alert border-0 shadow-sm mb-4 dashboard-admin__nuovi-annunci-notifica"
+          role="status"
+        >
+          <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div>
+              <p class="mb-1 fw-semibold">Nuovi annunci pubblicati</p>
+              <p class="mb-0 small text-muted">
+                @if (nuoviAnnunciCount === 1) {
+                  È presente 1 nuovo annuncio dall’ultima verifica.
+                } @else {
+                  Sono presenti {{ nuoviAnnunciCount }} nuovi annunci dall’ultima verifica.
+                }
+              </p>
+            </div>
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-primary flex-shrink-0"
+              (click)="segnaAnnunciVisti()"
+            >
+              Segna come visti
+            </button>
+          </div>
+        </div>
+      }
+
+      <section class="mb-5 dashboard-admin__section" aria-labelledby="adm-utenti">
+        <div class="dashboard-admin__section-head">
+          <h2 id="adm-utenti" class="dashboard-admin__section-title dashboard-admin__section-title--inline">
+            Utenti
+          </h2>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary dashboard-admin__section-toggle"
+            (click)="sezioneUtentiAperta = !sezioneUtentiAperta"
+            [attr.aria-expanded]="sezioneUtentiAperta"
+            aria-controls="adm-panel-utenti"
+          >
+            {{ sezioneUtentiAperta ? 'Nascondi' : 'Mostra' }}
+          </button>
+        </div>
+        <div id="adm-panel-utenti" [class.d-none]="!sezioneUtentiAperta">
+        <div class="dashboard-admin__table-card">
+          <div class="table-responsive">
+            <table class="table align-middle dashboard-admin__table mb-0">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Email</th>
+                  <th>Ruolo</th>
+                  <th>Bannato</th>
+                  <th class="text-end">Azioni</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (u of utenti; track u.id) {
+                  <tr class="dashboard-admin__row">
+                    <td class="dashboard-admin__td" data-label="Nome">
+                      <span class="dashboard-admin__cell-value">{{ u.nome }} {{ u.cognome }}</span>
+                    </td>
+                    <td class="dashboard-admin__td" data-label="Email">
+                      <span class="dashboard-admin__cell-value">{{ u.email }}</span>
+                    </td>
+                    <td class="dashboard-admin__td" data-label="Ruolo">
+                      <span class="dashboard-admin__cell-value">
+                        <span
+                          class="badge"
+                          [ngClass]="{
+                            'badge-role-admin': u.ruolo === 'ADMIN',
+                            'badge-role-venditore': u.ruolo === 'VENDITORE',
+                            'badge-role-acquirente': u.ruolo === 'ACQUIRENTE'
+                          }"
+                          >{{ u.ruolo }}</span
+                        >
+                      </span>
+                    </td>
+                    <td class="dashboard-admin__td" data-label="Bannato">
+                      <span class="dashboard-admin__cell-value">{{ u.bannato ? 'Sì' : 'No' }}</span>
+                    </td>
+                    <td class="dashboard-admin__td dashboard-admin__td--azioni text-end">
+                      <span class="dashboard-admin__cell-value dashboard-admin__cell-value--actions">
+                      <div class="dropdown dropup dashboard-admin__row-actions">
+                        <button
+                          class="btn btn-sm btn-outline-secondary dropdown-toggle dashboard-admin__dropdown-btn"
+                          type="button"
+                          [id]="'adm-dd-u-' + u.id"
+                          data-bs-toggle="dropdown"
+                          data-bs-boundary="viewport"
+                          data-bs-popper-config='{"strategy":"fixed"}'
+                          aria-expanded="false"
+                          aria-haspopup="true"
+                          aria-label="Azioni utente"
+                        >
+                          Azioni
+                        </button>
+                        <ul
+                          class="dropdown-menu dropdown-menu-end dashboard-admin__dropdown-menu shadow-sm"
+                          [attr.aria-labelledby]="'adm-dd-u-' + u.id"
+                        >
+                          <li>
+                            <button type="button" class="dropdown-item" (click)="toggleBan(u)">
+                              {{ u.bannato ? '✓ Sbanna utente' : '⊘ Banna utente' }}
+                            </button>
+                          </li>
+                          @if (u.ruolo !== 'ADMIN') {
+                            <li>
+                              <button type="button" class="dropdown-item" (click)="promuovi(u)">⬆ Promuovi admin</button>
+                            </li>
+                          }
+                        </ul>
+                      </div>
+                      </span>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+      </section>
+
+      <section class="mb-5 dashboard-admin__section" aria-labelledby="adm-annunci">
+        <div class="dashboard-admin__section-head">
+          <h2 id="adm-annunci" class="dashboard-admin__section-title dashboard-admin__section-title--inline">
+            Annunci
+            @if (nuoviAnnunciCount > 0) {
+              <span class="badge bg-primary ms-2 align-middle">{{ nuoviAnnunciCount }}</span>
+            }
+          </h2>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary dashboard-admin__section-toggle"
+            (click)="sezioneAnnunciAperta = !sezioneAnnunciAperta"
+            [attr.aria-expanded]="sezioneAnnunciAperta"
+            aria-controls="adm-panel-annunci"
+          >
+            {{ sezioneAnnunciAperta ? 'Nascondi' : 'Mostra' }}
+          </button>
+        </div>
+        <div id="adm-panel-annunci" [class.d-none]="!sezioneAnnunciAperta">
+        <div class="dashboard-admin__table-card">
+          <div class="table-responsive">
+            <table class="table align-middle dashboard-admin__table mb-0">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Titolo</th>
+                  <th>Prezzo</th>
+                  <th class="text-end">Azioni</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (a of annunci; track a.id) {
+                  <tr
+                    class="dashboard-admin__row"
+                    [class.dashboard-admin__row--nuovo]="annuncioSegnalatoNuovo(a)"
+                  >
+                    <td class="dashboard-admin__td" data-label="ID">
+                      <span class="dashboard-admin__cell-value">{{ a.id }}</span>
+                    </td>
+                    <td class="dashboard-admin__td" data-label="Titolo">
+                      <a [routerLink]="['/annunci', a.id]" class="dashboard-admin__aste-link">{{
+                        a.titolo
+                      }}</a>
+                    </td>
+                    <td class="dashboard-admin__td" data-label="Prezzo">
+                      <span class="dashboard-admin__cell-value">{{ a.prezzo | number: '1.0-2' }} €</span>
+                    </td>
+                    <td class="dashboard-admin__td dashboard-admin__td--azioni text-end">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-danger d-inline-flex align-items-center justify-content-center px-2"
+                        (click)="eliminaAnnuncio(a)"
+                        aria-label="Elimina annuncio"
+                      >
+                        <app-icon-trash />
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+      </section>
+
+      <section class="mb-5 dashboard-admin__section" aria-labelledby="adm-aste">
+        <div class="dashboard-admin__section-head">
+          <h2 id="adm-aste" class="dashboard-admin__section-title dashboard-admin__section-title--inline">Aste</h2>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary dashboard-admin__section-toggle"
+            (click)="sezioneAsteAperta = !sezioneAsteAperta"
+            [attr.aria-expanded]="sezioneAsteAperta"
+            aria-controls="adm-panel-aste"
+          >
+            {{ sezioneAsteAperta ? 'Nascondi' : 'Mostra' }}
+          </button>
+        </div>
+        <div id="adm-panel-aste" [class.d-none]="!sezioneAsteAperta">
+        <p class="small text-muted mb-3">
+          Tutte le aste create sui annunci. Il venditore gestisce creazione e prezzi dalla propria dashboard; qui puoi
+          supervisionare e rimuovere un’asta (l’annuncio resta pubblicato).
+        </p>
+        @if (aste.length === 0) {
+          <p class="text-muted mb-0">Nessuna asta nel sistema.</p>
+        } @else {
+          <div class="dashboard-admin__table-card">
+            <div class="table-responsive">
+              <table class="table align-middle dashboard-admin__table mb-0">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Annuncio</th>
+                    <th>Venditore</th>
+                    <th>Offerta attuale</th>
+                    <th>Scadenza</th>
+                    <th>Stato</th>
+                    <th class="text-end">Azioni</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (ev of aste; track ev.id) {
+                    <tr class="dashboard-admin__row">
+                      <td class="dashboard-admin__td" data-label="ID">
+                        <span class="dashboard-admin__cell-value">{{ ev.id }}</span>
+                      </td>
+                      <td class="dashboard-admin__td" data-label="Annuncio">
+                        <a [routerLink]="['/annunci', ev.annuncioId]" class="dashboard-admin__aste-link">{{
+                          titoloAnnuncioAsta(ev)
+                        }}</a>
+                      </td>
+                      <td class="dashboard-admin__td" data-label="Venditore">
+                        <span class="dashboard-admin__cell-value small">{{ ev.emailVenditore ?? '—' }}</span>
+                      </td>
+                      <td class="dashboard-admin__td" data-label="Offerta">
+                        <span class="dashboard-admin__cell-value">{{ ev.offertaAttuale | number: '1.0-2' }} €</span>
+                      </td>
+                      <td class="dashboard-admin__td" data-label="Scadenza">
+                        <time [attr.datetime]="ev.scadenza">{{ ev.scadenza | date: 'short' }}</time>
+                      </td>
+                      <td class="dashboard-admin__td" data-label="Stato">
+                        @if (astaScaduta(ev.scadenza)) {
+                          <span class="badge bg-secondary">Terminata</span>
+                        } @else {
+                          <span class="badge bg-success">In corso</span>
+                        }
+                      </td>
+                      <td class="dashboard-admin__td dashboard-admin__td--azioni text-end">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-outline-danger d-inline-flex align-items-center justify-content-center px-2"
+                          (click)="eliminaAsta(ev)"
+                          aria-label="Rimuovi asta"
+                        >
+                          <app-icon-trash />
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+        </div>
+      </section>
+
+      <section class="mb-5 dashboard-admin__section" aria-labelledby="adm-rec">
+        <div class="dashboard-admin__section-head">
+          <h2 id="adm-rec" class="dashboard-admin__section-title dashboard-admin__section-title--inline">
+            Recensioni
+          </h2>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary dashboard-admin__section-toggle"
+            (click)="sezioneRecensioniAperta = !sezioneRecensioniAperta"
+            [attr.aria-expanded]="sezioneRecensioniAperta"
+            aria-controls="adm-panel-recensioni"
+          >
+            {{ sezioneRecensioniAperta ? 'Nascondi' : 'Mostra' }}
+          </button>
+        </div>
+        <div id="adm-panel-recensioni" [class.d-none]="!sezioneRecensioniAperta">
+        <div class="dashboard-admin__table-card">
+          <div class="table-responsive">
+            <table class="table align-middle dashboard-admin__table mb-0">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Annuncio</th>
+                  <th>Autore</th>
+                  <th>Voto</th>
+                  <th>Testo</th>
+                  <th class="text-end">Azioni</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (r of recensioni; track r.id) {
+                  <tr class="dashboard-admin__row">
+                    <td class="dashboard-admin__td" data-label="ID">
+                      <span class="dashboard-admin__cell-value">{{ r.id }}</span>
+                    </td>
+                    <td class="dashboard-admin__td" data-label="Annuncio">
+                      @if (r.annuncioId != null) {
+                        <a [routerLink]="['/annunci', r.annuncioId]" class="dashboard-admin__aste-link"
+                          >#{{ r.annuncioId }}</a
+                        >
+                      } @else {
+                        <span class="dashboard-admin__cell-value">—</span>
+                      }
+                    </td>
+                    <td class="dashboard-admin__td" data-label="Autore">
+                      <span class="dashboard-admin__cell-value">{{ nomeCompletoAutoreRecensione(r) }}</span>
+                    </td>
+                    <td class="dashboard-admin__td" data-label="Voto">
+                      <span class="dashboard-admin__cell-value">{{ r.voto }}</span>
+                    </td>
+                    <td class="dashboard-admin__td dashboard-admin__td--testo" data-label="Testo">
+                      <span class="dashboard-admin__cell-value dashboard-admin__cell-value--testo">{{ r.testo }}</span>
+                    </td>
+                    <td class="dashboard-admin__td dashboard-admin__td--azioni text-end">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-danger d-inline-flex align-items-center justify-content-center px-2"
+                        (click)="eliminaRecensione(r)"
+                        aria-label="Elimina recensione"
+                      >
+                        <app-icon-trash />
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+      </section>
+    }
+  </div>
+</div>

@@ -1,0 +1,797 @@
+.dashboard-venditore__page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3vw, 1.5rem);
+  padding-bottom: max(clamp(1.5rem, 4vw, 3rem), env(safe-area-inset-bottom, 0px));
+}
+
+/* Solo form «Nuovo annuncio»: contenitore più stretto, niente altro in pagina */
+.dashboard-venditore__page--solo-nuovo {
+  max-width: 42rem;
+}
+
+/** Superfici card unificate (stesso linguaggio delle sezioni collassabili) */
+.dashboard-venditore__surface {
+  border-radius: var(--radius-card);
+  background: var(--color-surface-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.dashboard-venditore__surface--ribassa {
+  border-left: 4px solid #f59e0b;
+}
+
+.dashboard-venditore__surface--asta {
+  border-left: 4px solid #0ea5e9;
+}
+
+/** Messaggi di stato in cima alla dashboard (non le card «notifiche» sotto) */
+.dashboard-venditore__flash {
+  border: 0;
+  border-radius: var(--radius-card);
+  font-family: 'Outfit', sans-serif;
+  box-shadow: var(--shadow-sm);
+}
+
+.dashboard-venditore__flash--success {
+  border-left: 4px solid var(--color-success);
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.1),
+    rgba(255, 255, 255, 0.98)
+  );
+  color: var(--color-text);
+}
+
+.dashboard-venditore__flash--danger {
+  border-left: 4px solid var(--color-danger);
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.08),
+    rgba(255, 255, 255, 0.98)
+  );
+  color: var(--color-text);
+}
+
+.dashboard-venditore__header {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 1rem;
+}
+
+.dashboard-venditore__header-actions .btn {
+  border-radius: var(--radius-btn);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+}
+
+.dashboard-venditore__btn-admin {
+  min-height: 2.5rem;
+}
+
+.dashboard-venditore__title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  color: var(--color-primary);
+}
+
+.dashboard-venditore__subtitle {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.02em;
+}
+
+.dashboard-venditore__icon-plus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  margin-right: 0.4rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1;
+  vertical-align: -0.1em;
+}
+
+.btn-nuovo-annuncio {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  padding: 0.6rem 1.5rem;
+}
+
+.dashboard-venditore__form-card {
+  border-left: 4px solid var(--color-accent);
+}
+
+.dashboard-venditore__messaggi-notifica {
+  background: linear-gradient(
+    135deg,
+    rgba(212, 165, 116, 0.14),
+    rgba(255, 255, 255, 0.96)
+  );
+  border-left: 4px solid var(--color-accent);
+  border-radius: var(--radius-card);
+  font-family: 'Outfit', sans-serif;
+  color: var(--color-text);
+}
+
+/** Avviso nuove offerte sulle aste (stesso stile informativo, bordo ambra). */
+.dashboard-venditore__aste-notifica {
+  background: linear-gradient(
+    135deg,
+    rgba(217, 119, 6, 0.12),
+    rgba(255, 255, 255, 0.96)
+  );
+  border-left: 4px solid #d97706;
+  border-radius: var(--radius-card);
+  font-family: 'Outfit', sans-serif;
+  color: var(--color-text);
+}
+
+/** Nuove richieste di visita (blu, distinto da messaggi/aste/recensioni). */
+.dashboard-venditore__visite-notifica {
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.1),
+    rgba(255, 255, 255, 0.96)
+  );
+  border-left: 4px solid #2563eb;
+  border-radius: var(--radius-card);
+  font-family: 'Outfit', sans-serif;
+  color: var(--color-text);
+}
+
+.dashboard-venditore__visite-notifica-link {
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.dashboard-venditore__visite-notifica-link:hover {
+  text-decoration: underline;
+}
+
+/** Nuove recensioni ricevute (bordo verde, coerente con recensioni in home). */
+.dashboard-venditore__recensioni-notifica {
+  background: linear-gradient(
+    135deg,
+    rgba(5, 150, 105, 0.1),
+    rgba(255, 255, 255, 0.96)
+  );
+  border-left: 4px solid #059669;
+  border-radius: var(--radius-card);
+  font-family: 'Outfit', sans-serif;
+  color: var(--color-text);
+}
+
+.dashboard-venditore__recensione-link {
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.dashboard-venditore__recensione-link:hover {
+  text-decoration: underline;
+}
+
+.badge-tipo {
+  letter-spacing: 0.1em;
+  font-weight: 500;
+  font-size: 0.65rem;
+}
+
+.dashboard-venditore__table-card {
+  background: var(--color-surface-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.dashboard-venditore__table {
+  --bs-table-bg: transparent;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: none;
+}
+
+.dashboard-venditore__table thead th {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+  border-bottom: 2px solid var(--color-border);
+  padding: 1rem 1.5rem;
+}
+
+.dashboard-venditore__table tbody tr:nth-child(odd) {
+  background-color: var(--color-surface);
+}
+
+.dashboard-venditore__table tbody tr:nth-child(even) {
+  background-color: #fff;
+}
+
+.dashboard-venditore__table tbody tr {
+  transition: background var(--transition-fast);
+}
+
+.dashboard-venditore__table tbody tr:hover {
+  background-color: var(--color-accent-light) !important;
+}
+
+/* Annunci con messaggi non ancora aperti in dashboard: bordo animato */
+.dashboard-venditore__table tbody tr.dashboard-venditore__row--messaggi-nuovi {
+  animation: dv-msg-border-pulse 2.2s ease-in-out infinite;
+  box-shadow: inset 0 0 0 2px rgba(184, 138, 94, 0.5);
+}
+
+@keyframes dv-msg-border-pulse {
+  0%,
+  100% {
+    box-shadow: inset 0 0 0 2px rgba(184, 138, 94, 0.45);
+  }
+  50% {
+    box-shadow: inset 0 0 0 3px rgba(212, 165, 116, 0.85);
+  }
+}
+
+.dashboard-venditore__table td,
+.dashboard-venditore__table th {
+  padding: 1rem 1.5rem;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dashboard-venditore .table-responsive {
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+/* Sezioni dashboard collassabili (I tuoi annunci, Visite, Aste) */
+.dashboard-venditore__dash-collapse-section {
+  border-radius: var(--radius-card, 14px);
+  overflow: hidden;
+}
+
+.dashboard-venditore__dash-collapse-card {
+  border-radius: inherit;
+}
+
+.dashboard-venditore__dash-collapse-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1rem 1.25rem;
+  text-align: left;
+  background: var(--color-surface-card);
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-family: 'Outfit', sans-serif;
+  transition: background 0.15s ease;
+}
+
+.dashboard-venditore__dash-collapse-toggle:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.dashboard-venditore__dash-collapse-toggle:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.dashboard-venditore__dash-collapse-toggle.collapsed {
+  border-bottom-color: transparent;
+}
+
+/** Variante per zona pericolosa (Elimina account) */
+.dashboard-venditore__dash-collapse-toggle--danger:hover {
+  background: rgba(185, 28, 28, 0.06);
+}
+
+.dashboard-venditore__dash-collapse-toggle--danger .dashboard-venditore__section-title {
+  color: #b91c1c;
+}
+
+.dashboard-venditore__dash-collapse-toggle--danger:focus-visible {
+  outline-color: #dc2626;
+}
+
+.dashboard-venditore__dash-collapse-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.dashboard-venditore__dash-collapse-chevron {
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  line-height: 1;
+  opacity: 0.65;
+  transition: transform 0.2s ease;
+}
+
+.dashboard-venditore__dash-collapse-toggle:not(.collapsed) .dashboard-venditore__dash-collapse-chevron {
+  transform: rotate(180deg);
+}
+
+.dashboard-venditore__dash-collapse-body {
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+/* Tabella visite/aste: allineata ai bordi della card (meno “doppio contenitore”) */
+.dashboard-venditore__appuntamenti .dashboard-venditore__dash-collapse-table-flush,
+.dashboard-venditore__aste .dashboard-venditore__dash-collapse-table-flush {
+  margin-left: -1.25rem;
+  margin-right: -1.25rem;
+  width: calc(100% + 2.5rem);
+  max-width: none;
+}
+
+@media (max-width: 575.98px) {
+  .dashboard-venditore__appuntamenti .dashboard-venditore__dash-collapse-table-flush,
+  .dashboard-venditore__aste .dashboard-venditore__dash-collapse-table-flush {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+  }
+}
+
+/* Titoli sezione nei toggle (Cormorant come le altre intestazioni) */
+.dashboard-venditore__dash-collapse-title.dashboard-venditore__section-title {
+  font-size: clamp(1.05rem, 2.5vw, 1.25rem);
+  line-height: 1.25;
+}
+
+.dashboard-venditore__dash-collapse-toggle .badge {
+  font-weight: 600;
+  font-size: 0.7rem;
+  padding: 0.35em 0.65em;
+  border-radius: 999px;
+}
+
+/* Tabella annunci a filo con il pannello (desktop; sotto md la tabella è nascosta) */
+.dashboard-venditore__dash-collapse-body > .dashboard-venditore__table-card:first-child {
+  margin-left: -1.25rem;
+  margin-right: -1.25rem;
+  width: calc(100% + 2.5rem);
+  max-width: none;
+  border-radius: 0;
+  box-shadow: none;
+  border-top: 1px solid var(--color-border);
+}
+
+@media (max-width: 767.98px) {
+  .dashboard-venditore__dash-collapse-body > .dashboard-venditore__table-card:first-child {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-sm);
+    border-top: none;
+  }
+}
+
+/* Mobile: elenco card annunci sotto la tabella desktop */
+.dashboard-venditore__annunci-mobile-wrap {
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-venditore__annunci-mobile {
+  margin-bottom: 0.25rem;
+}
+
+.dashboard-venditore__annuncio-mobile {
+  border-radius: var(--radius-card);
+  overflow: visible;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-card);
+}
+
+/* Tabelle compatte (visite / aste) coerenti con la tabella annunci */
+.dashboard-venditore__appuntamenti-table thead th,
+.dashboard-venditore__aste-table thead th {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  border-bottom: 2px solid var(--color-border);
+  padding: 0.75rem 1rem;
+  vertical-align: middle;
+}
+
+.dashboard-venditore__appuntamenti-table tbody td,
+.dashboard-venditore__aste-table tbody td {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9rem;
+  padding: 0.75rem 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dashboard-venditore__appuntamenti-table tbody tr:last-child td,
+.dashboard-venditore__aste-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.dashboard-venditore__annuncio-mobile--nuovi {
+  animation: dv-msg-border-pulse 2.2s ease-in-out infinite;
+}
+
+.dashboard-venditore__row-actions {
+  position: relative;
+  z-index: 1;
+}
+
+.dashboard-venditore__row-actions:has(.dropdown-toggle.show) {
+  z-index: 1080;
+}
+
+.dashboard-venditore__row-actions .dropdown-menu.dashboard-venditore__dropdown-menu--azioni {
+  min-width: 14rem;
+  z-index: var(--bs-dropdown-zindex, 1000);
+}
+
+.dashboard-venditore__dropdown-btn {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400;
+  font-size: 0.875rem;
+  border-radius: 8px;
+}
+
+.dashboard-venditore__dropdown-menu {
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 0;
+
+  .dropdown-item {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+  }
+
+  .dropdown-item.text-danger {
+    color: #dc2626 !important;
+  }
+}
+
+.dashboard-venditore__dropdown--mobile {
+  position: relative;
+  z-index: 1;
+}
+
+.dashboard-venditore__dropdown--mobile:has(.dropdown-toggle.show) {
+  z-index: 1080;
+}
+
+.dashboard-venditore__dropdown-btn--azioni {
+  min-height: 2.75rem;
+  font-weight: 500;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-venditore__dropdown-btn--azioni.btn-sm {
+  min-width: 5.5rem;
+}
+
+.dashboard-venditore__dropdown-menu--azioni {
+  padding: 0.35rem 0;
+  max-width: 100%;
+}
+
+.dashboard-venditore__dropdown--mobile .dashboard-venditore__dropdown-menu--azioni {
+  margin-top: 0.5rem !important;
+}
+
+.dashboard-venditore__dropdown-item--azioni {
+  min-height: 2.75rem;
+  padding: 0.65rem 1rem !important;
+  font-size: 0.95rem;
+  line-height: 1.25;
+  white-space: normal;
+}
+
+.dashboard-venditore__dropdown-item--azioni.dropdown-item:active {
+  background-color: var(--color-surface-elevated, var(--bs-tertiary-bg));
+}
+
+.dashboard-venditore__dropdown-divider--azioni {
+  margin: 0.35rem 0;
+  opacity: 0.65;
+}
+
+.dashboard-venditore__dropdown-item--danger {
+  font-weight: 500;
+}
+
+.dashboard-venditore__dropdown-danger-icon {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+}
+
+.dashboard-venditore .btn-sm:not(.dropdown-toggle) {
+  min-width: 4.25rem;
+  border-radius: var(--radius-btn);
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.dashboard-venditore .dropdown-toggle.btn-sm:not(.dashboard-venditore__dropdown-btn--azioni) {
+  min-width: 5rem;
+  border-radius: 8px;
+  font-weight: 400;
+  transition: var(--transition);
+}
+
+.dashboard-venditore__file-input::file-selector-button {
+  margin-right: 0.75rem;
+}
+
+.dashboard-venditore__foto-coda {
+  max-width: 36rem;
+}
+
+.dashboard-venditore__foto-attuali .form-label {
+  font-size: 0.95rem;
+}
+
+.dashboard-venditore__foto-thumb-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-venditore__foto-rimuovi {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.dashboard-venditore__foto-thumb-link {
+  display: block;
+  border-radius: 0.375rem;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-alt);
+  transition: var(--transition);
+}
+
+.dashboard-venditore__foto-thumb-link:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-sm);
+}
+
+.dashboard-venditore__foto-thumb {
+  width: 100%;
+  height: 7rem;
+  object-fit: cover;
+  display: block;
+  vertical-align: middle;
+}
+
+.dashboard-venditore .badge.bg-primary {
+  background: var(--color-primary) !important;
+}
+
+.dashboard-venditore__pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0 0;
+  font-family: 'Outfit', sans-serif;
+}
+
+.dashboard-venditore__pagination-range {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.dashboard-venditore__pagination-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.dashboard-venditore__pagination-status {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  padding: 0.35rem 0.5rem;
+  white-space: nowrap;
+}
+
+.dashboard-venditore__pagination-btn {
+  border-radius: 8px;
+  font-weight: 500;
+  min-width: 5.25rem;
+}
+
+.dashboard-venditore__messaggi-panel {
+  padding: 0;
+}
+
+.dashboard-venditore__messaggi-panel-body {
+  position: relative;
+  padding-top: 2.5rem;
+}
+
+.dashboard-venditore__messaggi-panel-subtitle {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  padding-right: 4rem;
+}
+
+.dashboard-venditore__messaggi-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  font-family: 'Outfit', sans-serif;
+  color: var(--color-text-muted) !important;
+  text-decoration: none !important;
+  padding: 0.25rem 0.5rem;
+}
+
+.dashboard-venditore__messaggi-close:hover {
+  color: var(--color-text) !important;
+}
+
+/* Titolo grande rimosso: ora il toggle riporta «Messaggi»; sottotitolo annuncio in .messaggi-panel-subtitle */
+
+.dashboard-venditore__messaggi-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.dashboard-venditore__messaggio-row {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dashboard-venditore__messaggio-row:last-child {
+  border-bottom: none;
+}
+
+.dashboard-venditore__messaggio-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem 1.25rem;
+}
+
+.dashboard-venditore__messaggio-sender {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.dashboard-venditore__messaggio-nome {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.dashboard-venditore__messaggio-email {
+  display: block;
+  margin-top: 0.2rem;
+  word-break: break-word;
+}
+
+.dashboard-venditore__messaggio-data {
+  flex: 0 0 auto;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.dashboard-venditore__messaggio-testo {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+.dashboard-venditore__form-map {
+  z-index: 0;
+}
+
+.dashboard-venditore__indirizzo-manuale {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.dashboard-venditore__indirizzo-manuale .form-control {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+@media (max-width: 575.98px) {
+  .dashboard-venditore__table thead th,
+  .dashboard-venditore__table td:not(.dashboard-venditore__td) {
+    padding: 0.65rem 0.75rem;
+  }
+
+  .btn-nuovo-annuncio {
+    width: 100%;
+  }
+
+  .dashboard-venditore__pagination {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .dashboard-venditore__pagination-actions {
+    justify-content: center;
+    width: 100%;
+  }
+
+  /* Stato «Pagina x / y» sopra i due pulsanti */
+  .dashboard-venditore__pagination-status {
+    flex: 1 1 100%;
+    order: -1;
+    text-align: center;
+    padding-bottom: 0.15rem;
+  }
+
+  .dashboard-venditore__pagination-btn {
+    flex: 1 1 calc(50% - 0.25rem);
+    min-width: 0;
+  }
+}
+
+.dashboard-venditore__section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  color: var(--color-primary);
+}
+
+/** Striscia accento come form annuncio (superficie da `.dashboard-venditore__surface`). */
+.dashboard-venditore__account-card {
+  border-left: 4px solid var(--color-accent);
+}
+
+.dashboard-venditore__aste-link {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.dashboard-venditore__aste-link:hover {
+  text-decoration: underline;
+}
+
+/* Riga tabella aste con offerta non ancora “vista” dal venditore */
+.dashboard-venditore__aste-table tbody tr.dashboard-venditore__aste-row--nuova {
+  animation: dv-asta-border-pulse 2.2s ease-in-out infinite;
+  box-shadow: inset 0 0 0 2px rgba(217, 119, 6, 0.45);
+}
+
+@keyframes dv-asta-border-pulse {
+  0%,
+  100% {
+    box-shadow: inset 0 0 0 2px rgba(217, 119, 6, 0.4);
+  }
+  50% {
+    box-shadow: inset 0 0 0 3px rgba(217, 119, 6, 0.8);
+  }
+}

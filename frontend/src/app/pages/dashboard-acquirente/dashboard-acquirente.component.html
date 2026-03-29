@@ -1,0 +1,551 @@
+<div class="dashboard-acquirente animate-fadeup">
+  <div class="dashboard-acquirente__page">
+    <header class="mb-4 dashboard-acquirente__header">
+      <h1 class="mb-1 dashboard-acquirente__title">Benvenuto {{ nomeBenvenuto }}</h1>
+      <p class="dashboard-acquirente__subtitle mb-0">
+        Dashboard acquirente — Richieste di visita, offerte nelle aste, messaggi ai venditori e recensioni.
+      </p>
+    </header>
+
+    @if (errore) {
+      <p class="alert alert-danger mb-3 dashboard-acquirente__flash dashboard-acquirente__flash--danger">{{ errore }}</p>
+    }
+
+    @if (loading) {
+      <p class="text-muted">Caricamento…</p>
+    } @else {
+      <section class="row g-3 mb-4 dashboard-acquirente__quick" aria-label="Collegamenti rapidi">
+        <div class="col-12 col-md-4">
+          <a routerLink="/mappa" class="dashboard-acquirente__quick-card text-decoration-none">
+            <span class="dashboard-acquirente__quick-icon" aria-hidden="true">◎</span>
+            <span class="dashboard-acquirente__quick-label">Mappa annunci</span>
+            <span class="dashboard-acquirente__quick-hint">Cerca immobili sulla mappa</span>
+          </a>
+        </div>
+        <div class="col-12 col-md-4">
+          <a routerLink="/home" class="dashboard-acquirente__quick-card text-decoration-none">
+            <span class="dashboard-acquirente__quick-icon" aria-hidden="true">⌂</span>
+            <span class="dashboard-acquirente__quick-label">Catalogo</span>
+            <span class="dashboard-acquirente__quick-hint">Sfoglia gli annunci in evidenza</span>
+          </a>
+        </div>
+        <div class="col-12 col-md-4">
+          <button
+            type="button"
+            class="dashboard-acquirente__quick-card dashboard-acquirente__quick-card--messaggi w-100 text-start"
+            (click)="vaiAncoraMessaggi()"
+            aria-controls="da-collapse-messaggi"
+            aria-label="Vai alla sezione Messaggi inviati"
+          >
+            <span class="dashboard-acquirente__quick-icon" aria-hidden="true">✉</span>
+            <span class="dashboard-acquirente__quick-label">Messaggi al venditore</span>
+            <span class="dashboard-acquirente__quick-hint">
+              Per vedere qui i messaggi inviati, usa la stessa email del tuo account nel modulo contatti.
+            </span>
+          </button>
+        </div>
+      </section>
+
+      <section
+        class="card border-0 mb-4 dashboard-acquirente__surface dashboard-acquirente__dash-collapse-section"
+        aria-labelledby="da-toggle-visite"
+      >
+        <div class="card-body p-0">
+          <button
+            type="button"
+            id="da-toggle-visite"
+            class="dashboard-acquirente__dash-collapse-toggle collapsed"
+            data-bs-toggle="collapse"
+            data-bs-target="#da-collapse-visite"
+            aria-expanded="false"
+            aria-controls="da-collapse-visite"
+          >
+            <span class="dashboard-acquirente__dash-collapse-title dashboard-acquirente__section-title">Le tue richieste di visita</span>
+            <span class="badge bg-secondary">{{ appuntamenti.length }}</span>
+            <span class="dashboard-acquirente__dash-collapse-chevron" aria-hidden="true">▾</span>
+          </button>
+          <div id="da-collapse-visite" class="collapse">
+            <div class="dashboard-acquirente__dash-collapse-body">
+              <p class="small text-muted mb-3 mb-md-4">
+                Storico delle richieste dalla scheda annuncio: in <strong>attesa</strong> finché il venditore o l’admin non
+                decidono; <strong>completata</strong> dopo l’incontro (potrai recensire); <strong>rifiutata</strong> se la
+                richiesta non è stata accettata — in quel caso puoi aprire l’annuncio e richiedere di nuovo una visita.
+              </p>
+
+              @if (haRichiesteVisitaRifiutate()) {
+                <div class="alert alert-secondary border mb-3 mb-md-4 py-2 small" role="status">
+                  <span class="fw-semibold">Richiesta rifiutata.</span>
+                  Hai almeno una visita segnata come rifiutata: controlla la colonna Stato nella tabella e, se vuoi,
+                  torna sull’annuncio con «Apri annuncio» per inviare una nuova richiesta.
+                </div>
+              }
+
+              @if (appuntamenti.length === 0) {
+                <div class="card border-0 dashboard-acquirente__empty">
+                  <div class="card-body">
+                    <p class="mb-2 text-muted">
+                      Non hai ancora richiesto visite. Apri un annuncio e usa «Richiedi visita» nella scheda dettaglio.
+                    </p>
+                    <a routerLink="/home" class="btn btn-sm btn-outline-primary">Sfoglia annunci</a>
+                  </div>
+                </div>
+              } @else {
+                <div class="dashboard-acquirente__table-card dashboard-acquirente__dash-collapse-table-wrap">
+                  <div class="table-responsive">
+                    <table class="table align-middle dashboard-acquirente__table mb-0">
+                      <thead>
+                        <tr>
+                          <th>Annuncio</th>
+                          <th>Richiesta</th>
+                          <th>Stato</th>
+                          <th class="text-end">Dettaglio</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (ap of appuntamenti; track ap.id) {
+                          <tr class="dashboard-acquirente__row">
+                            <td class="dashboard-acquirente__td dashboard-acquirente__td--titolo" data-label="Annuncio">
+                              @if (ap.annuncioId != null) {
+                                <a [routerLink]="['/annunci', ap.annuncioId]" class="dashboard-acquirente__link-annuncio">{{
+                                  titoloAnnuncioAppuntamento(ap)
+                                }}</a>
+                              } @else {
+                                <span>—</span>
+                              }
+                            </td>
+                            <td class="dashboard-acquirente__td" data-label="Richiesta">
+                              <time [attr.datetime]="ap.createdAt">{{ ap.createdAt | date: 'short' }}</time>
+                            </td>
+                            <td class="dashboard-acquirente__td" data-label="Stato">
+                              @if (ap.stato === 'PENDING') {
+                                <span class="badge text-bg-warning text-dark">In attesa</span>
+                              } @else if (ap.stato === 'RIFIUTATO') {
+                                <span class="badge text-bg-secondary">Rifiutata</span>
+                              } @else {
+                                <span class="badge text-bg-success">Completata</span>
+                              }
+                            </td>
+                            <td class="dashboard-acquirente__td text-end" data-label="Dettaglio">
+                              @if (ap.annuncioId != null) {
+                                <a [routerLink]="['/annunci', ap.annuncioId]" class="btn btn-sm btn-outline-primary">Apri annuncio</a>
+                              } @else {
+                                <span class="small text-muted">—</span>
+                              }
+                            </td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="card border-0 mb-4 dashboard-acquirente__surface dashboard-acquirente__dash-collapse-section"
+        aria-labelledby="da-toggle-aste"
+      >
+        <div class="card-body p-0">
+          <button
+            type="button"
+            id="da-toggle-aste"
+            class="dashboard-acquirente__dash-collapse-toggle collapsed"
+            data-bs-toggle="collapse"
+            data-bs-target="#da-collapse-aste"
+            aria-expanded="false"
+            aria-controls="da-collapse-aste"
+          >
+            <span class="dashboard-acquirente__dash-collapse-title dashboard-acquirente__section-title">Le tue offerte nelle aste</span>
+            <span class="badge bg-secondary">{{ aste.length }}</span>
+            <span class="dashboard-acquirente__dash-collapse-chevron" aria-hidden="true">▾</span>
+          </button>
+          <div id="da-collapse-aste" class="collapse">
+            <div class="dashboard-acquirente__dash-collapse-body">
+              <p class="small text-muted mb-3 mb-md-4 dashboard-acquirente__section-note dashboard-acquirente__section-note--collapse">
+                Risultati in cui sei l’offerente con l’importo migliore al momento.
+              </p>
+
+              @if (erroreAstaAzione) {
+                <p class="alert alert-danger py-2 small mb-3 dashboard-acquirente__flash dashboard-acquirente__flash--danger" role="alert">
+                  {{ erroreAstaAzione }}
+                </p>
+              }
+
+              @if (aste.length === 0) {
+                <div class="card border-0 dashboard-acquirente__empty">
+                  <div class="card-body">
+                    <p class="mb-2 text-muted">
+                      Non risulti offerente migliore in nessuna asta al momento, oppure non hai ancora partecipato.
+                    </p>
+                    <a routerLink="/home" class="btn btn-sm btn-outline-primary">Trova un annuncio</a>
+                  </div>
+                </div>
+              } @else {
+                <div class="dashboard-acquirente__table-card dashboard-acquirente__dash-collapse-table-wrap">
+                  <div class="table-responsive">
+                    <table class="table align-middle dashboard-acquirente__table mb-0">
+                      <thead>
+                        <tr>
+                          <th>Annuncio</th>
+                          <th>La tua offerta</th>
+                          <th>Scadenza</th>
+                          <th>Stato</th>
+                          <th class="text-end">Azioni</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (a of aste; track a.id) {
+                          <tr class="dashboard-acquirente__row">
+                            <td class="dashboard-acquirente__td dashboard-acquirente__td--titolo" data-label="Annuncio">
+                              <a [routerLink]="['/annunci', a.annuncioId]" class="dashboard-acquirente__link-annuncio">{{
+                                titoloAnnuncioAsta(a)
+                              }}</a>
+                            </td>
+                            <td class="dashboard-acquirente__td" data-label="Offerta">
+                              @if (astaModificaId === a.id) {
+                                <form [formGroup]="astaEditForm" (ngSubmit)="salvaModificaAsta()" class="d-flex flex-column gap-2 align-items-stretch">
+                                  <label class="visually-hidden" [attr.for]="'da-asta-importo-' + a.id">Nuovo importo (€)</label>
+                                  <input
+                                    [id]="'da-asta-importo-' + a.id"
+                                    type="number"
+                                    class="form-control form-control-sm"
+                                    formControlName="importo"
+                                    step="0.01"
+                                    [min]="minImportoModificaAsta(a)"
+                                  />
+                                  <div class="d-flex flex-wrap gap-2">
+                                    <button type="submit" class="btn btn-primary btn-sm" [disabled]="astaEditForm.invalid">
+                                      Salva
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" (click)="annullaModificaAsta()">
+                                      Annulla
+                                    </button>
+                                  </div>
+                                </form>
+                              } @else {
+                                <span class="dashboard-acquirente__cell-value">{{ a.offertaAttuale | number: '1.0-2' }} €</span>
+                              }
+                            </td>
+                            <td class="dashboard-acquirente__td" data-label="Scadenza">
+                              <time [attr.datetime]="a.scadenza">{{ a.scadenza | date: 'short' }}</time>
+                            </td>
+                            <td class="dashboard-acquirente__td" data-label="Stato">
+                              @if (astaScaduta(a.scadenza)) {
+                                <span class="badge bg-secondary">Asta terminata</span>
+                              } @else {
+                                <span class="badge bg-success">In corso</span>
+                              }
+                            </td>
+                            <td class="dashboard-acquirente__td text-end" data-label="Azioni">
+                              @if (!astaScaduta(a.scadenza)) {
+                                @if (astaModificaId === a.id) {
+                                  <span class="small text-muted" aria-hidden="true">—</span>
+                                } @else {
+                                  <div class="d-flex flex-wrap justify-content-end gap-2">
+                                    <button
+                                      type="button"
+                                      class="btn btn-sm btn-outline-secondary"
+                                      (click)="iniziaModificaAsta(a)"
+                                      [disabled]="astaModificaId !== null || messaggioModificaId !== null || recensioneModificaId !== null"
+                                    >
+                                      Modifica
+                                    </button>
+                                    <button
+                                      type="button"
+                                      class="btn btn-sm btn-outline-danger"
+                                      (click)="ritiraOffertaAsta(a)"
+                                      [disabled]="astaModificaId !== null || messaggioModificaId !== null || recensioneModificaId !== null"
+                                    >
+                                      Ritira
+                                    </button>
+                                  </div>
+                                }
+                              } @else {
+                                <span class="small text-muted">—</span>
+                              }
+                            </td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="da-sezione-messaggi"
+        class="card border-0 mb-4 dashboard-acquirente__surface dashboard-acquirente__dash-collapse-section"
+        aria-labelledby="da-toggle-messaggi"
+      >
+        <div class="card-body p-0">
+          <button
+            type="button"
+            id="da-toggle-messaggi"
+            class="dashboard-acquirente__dash-collapse-toggle collapsed"
+            data-bs-toggle="collapse"
+            data-bs-target="#da-collapse-messaggi"
+            aria-expanded="false"
+            aria-controls="da-collapse-messaggi"
+          >
+            <span class="dashboard-acquirente__dash-collapse-title dashboard-acquirente__section-title">Messaggi inviati</span>
+            <span class="badge bg-secondary">{{ messaggi.length }}</span>
+            <span class="dashboard-acquirente__dash-collapse-chevron" aria-hidden="true">▾</span>
+          </button>
+          <div id="da-collapse-messaggi" class="collapse">
+            <div class="dashboard-acquirente__dash-collapse-body">
+              <span id="da-ancora-messaggi" class="dashboard-acquirente__scroll-anchor" tabindex="-1"></span>
+              @if (erroreMessaggioAzione) {
+                <p class="alert alert-danger py-2 small mb-3 dashboard-acquirente__flash dashboard-acquirente__flash--danger" role="alert">
+                  {{ erroreMessaggioAzione }}
+                </p>
+              }
+
+              @if (messaggi.length === 0) {
+                <div class="card border-0 dashboard-acquirente__empty">
+                  <div class="card-body">
+                    <p class="mb-0 text-muted">
+                      Nessun messaggio inviato. Dalla scheda di un annuncio puoi contattare il venditore (nome ed email presi dal tuo profilo).
+                    </p>
+                  </div>
+                </div>
+              } @else {
+                <div class="dashboard-acquirente__messaggi-list">
+                  @for (m of messaggi; track m.id) {
+                    <article class="card border-0 shadow-sm dashboard-acquirente__messaggio-card">
+                      <div class="card-body">
+                        @if (messaggioModificaId === m.id) {
+                          <form [formGroup]="messaggioEditForm" (ngSubmit)="salvaModificaMessaggio()">
+                            <p class="small text-muted mb-2">
+                              Annuncio:
+                              <a [routerLink]="['/annunci', m.annuncioId]" class="dashboard-acquirente__messaggio-titolo">{{
+                                titoloAnnuncioMessaggio(m)
+                              }}</a>
+                            </p>
+                            <div class="mb-3">
+                              <label class="form-label" [attr.for]="'da-msg-testo-' + m.id">Messaggio</label>
+                              <textarea
+                                [id]="'da-msg-testo-' + m.id"
+                                class="form-control form-control-sm"
+                                rows="4"
+                                formControlName="testo"
+                              ></textarea>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2">
+                              <button type="submit" class="btn btn-primary btn-sm" [disabled]="messaggioEditForm.invalid">
+                                Salva
+                              </button>
+                              <button type="button" class="btn btn-outline-secondary btn-sm" (click)="annullaModificaMessaggio()">
+                                Annulla
+                              </button>
+                            </div>
+                          </form>
+                        } @else {
+                          <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                            <a [routerLink]="['/annunci', m.annuncioId]" class="dashboard-acquirente__messaggio-titolo">{{
+                              titoloAnnuncioMessaggio(m)
+                            }}</a>
+                            @if (m.createdAt) {
+                              <time class="small text-muted" [attr.datetime]="m.createdAt">{{ m.createdAt | date: 'short' }}</time>
+                            }
+                          </div>
+                          <p class="small text-muted mb-1">{{ m.nomeMittente }}</p>
+                          <p class="mb-0 dashboard-acquirente__messaggio-testo">{{ m.testo }}</p>
+                          <div class="d-flex flex-wrap gap-2 mt-3 pt-2 border-top border-light">
+                            <button
+                              type="button"
+                              class="btn btn-sm btn-outline-secondary"
+                              (click)="iniziaModificaMessaggio(m)"
+                              [disabled]="astaModificaId !== null || messaggioModificaId !== null || recensioneModificaId !== null"
+                            >
+                              Modifica
+                            </button>
+                            <button
+                              type="button"
+                              class="btn btn-sm btn-outline-danger d-inline-flex align-items-center justify-content-center px-2"
+                              (click)="eliminaMessaggio(m)"
+                              [disabled]="astaModificaId !== null || messaggioModificaId !== null || recensioneModificaId !== null"
+                              aria-label="Elimina messaggio"
+                            >
+                              <app-icon-trash />
+                            </button>
+                          </div>
+                        }
+                      </div>
+                    </article>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="card border-0 mb-4 dashboard-acquirente__surface dashboard-acquirente__dash-collapse-section"
+        aria-labelledby="da-toggle-recensioni"
+      >
+        <div class="card-body p-0">
+          <button
+            type="button"
+            id="da-toggle-recensioni"
+            class="dashboard-acquirente__dash-collapse-toggle collapsed"
+            data-bs-toggle="collapse"
+            data-bs-target="#da-collapse-recensioni"
+            aria-expanded="false"
+            aria-controls="da-collapse-recensioni"
+          >
+            <span class="dashboard-acquirente__dash-collapse-title dashboard-acquirente__section-title">Le tue recensioni</span>
+            <span class="badge bg-secondary">{{ recensioni.length }}</span>
+            <span class="dashboard-acquirente__dash-collapse-chevron" aria-hidden="true">▾</span>
+          </button>
+          <div id="da-collapse-recensioni" class="collapse">
+            <div class="dashboard-acquirente__dash-collapse-body">
+              @if (erroreRecensioneAzione) {
+                <p class="alert alert-danger py-2 small mb-3 dashboard-acquirente__flash dashboard-acquirente__flash--danger" role="alert">
+                  {{ erroreRecensioneAzione }}
+                </p>
+              }
+
+              @if (recensioni.length === 0) {
+                <div class="card border-0 dashboard-acquirente__empty">
+                  <div class="card-body">
+                    <p class="mb-0 text-muted">
+                      Non hai ancora lasciato recensioni. Richiedi una visita dall’annuncio; quando il venditore la segna come
+                      completata, potrai pubblicare una recensione dalla scheda dettaglio.
+                    </p>
+                  </div>
+                </div>
+              } @else {
+                <div class="row g-3">
+                  @for (r of recensioni; track r.id) {
+                    <div class="col-12 col-md-6">
+                      <article class="card border-0 shadow-sm h-100 dashboard-acquirente__rec-card">
+                        <div class="card-body d-flex flex-column">
+                          @if (recensioneModificaId === r.id) {
+                            <form [formGroup]="recensioneEditForm" (ngSubmit)="salvaModificaRecensione()">
+                              <p class="small text-muted mb-2">
+                                <a [routerLink]="['/annunci', r.annuncioId]" class="dashboard-acquirente__rec-titolo">{{
+                                  titoloAnnuncioRecensione(r)
+                                }}</a>
+                              </p>
+                              <div class="mb-2">
+                                <label class="form-label" [attr.for]="'da-edit-testo-' + r.id">Testo</label>
+                                <textarea
+                                  [id]="'da-edit-testo-' + r.id"
+                                  class="form-control form-control-sm"
+                                  rows="4"
+                                  formControlName="testo"
+                                ></textarea>
+                              </div>
+                              <div class="mb-3">
+                                <label class="form-label" [attr.for]="'da-edit-voto-' + r.id">Voto</label>
+                                <select [id]="'da-edit-voto-' + r.id" class="form-select form-select-sm" formControlName="voto">
+                                  @for (v of votiDisponibili; track v) {
+                                    <option [ngValue]="v">{{ v }}</option>
+                                  }
+                                </select>
+                              </div>
+                              <div class="d-flex flex-wrap gap-2">
+                                <button type="submit" class="btn btn-primary btn-sm" [disabled]="recensioneEditForm.invalid">
+                                  Salva
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" (click)="annullaModificaRecensione()">
+                                  Annulla
+                                </button>
+                              </div>
+                            </form>
+                          } @else {
+                            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                              <div>
+                                <a [routerLink]="['/annunci', r.annuncioId]" class="dashboard-acquirente__rec-titolo">{{
+                                  titoloAnnuncioRecensione(r)
+                                }}</a>
+                                <p class="small text-muted mb-0 mt-1">{{ nomeCompletoAutoreRecensione(r) }}</p>
+                              </div>
+                              <div class="dashboard-acquirente__stelle" [attr.aria-label]="'Voto ' + r.voto + ' su 5'">
+                                @for (s of stelleIndici; track s) {
+                                  <span [class.dashboard-acquirente__stella--on]="s <= r.voto" class="dashboard-acquirente__stella">★</span>
+                                }
+                              </div>
+                            </div>
+                            <p class="mb-2 flex-grow-1 small dashboard-acquirente__rec-testo">{{ r.testo }}</p>
+                            @if (r.createdAt) {
+                              <time class="small text-muted" [attr.datetime]="r.createdAt">{{ r.createdAt | date: 'short' }}</time>
+                            }
+                            <div class="d-flex flex-wrap gap-2 mt-3 pt-2 border-top border-light">
+                              <button
+                                type="button"
+                                class="btn btn-sm btn-outline-secondary"
+                                (click)="iniziaModificaRecensione(r)"
+                                [disabled]="astaModificaId !== null || recensioneModificaId !== null || messaggioModificaId !== null"
+                              >
+                                Modifica
+                              </button>
+                              <button
+                                type="button"
+                                class="btn btn-sm btn-outline-danger d-inline-flex align-items-center justify-content-center px-2"
+                                (click)="eliminaRecensione(r)"
+                                [disabled]="astaModificaId !== null || recensioneModificaId !== null || messaggioModificaId !== null"
+                                aria-label="Elimina recensione"
+                              >
+                                <app-icon-trash />
+                              </button>
+                            </div>
+                          }
+                        </div>
+                      </article>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="card border-0 mb-4 dashboard-acquirente__surface dashboard-acquirente__account-card dashboard-acquirente__dash-collapse-section"
+        aria-labelledby="da-toggle-elimina-account"
+      >
+        <div class="card-body p-0">
+          <button
+            type="button"
+            id="da-toggle-elimina-account"
+            class="dashboard-acquirente__dash-collapse-toggle dashboard-acquirente__dash-collapse-toggle--danger collapsed"
+            data-bs-toggle="collapse"
+            data-bs-target="#da-collapse-elimina-account"
+            aria-expanded="false"
+            aria-controls="da-collapse-elimina-account"
+          >
+            <span class="dashboard-acquirente__dash-collapse-title dashboard-acquirente__section-title">Elimina account</span>
+            <span class="dashboard-acquirente__dash-collapse-chevron" aria-hidden="true">▾</span>
+          </button>
+          <div id="da-collapse-elimina-account" class="collapse">
+            <div class="dashboard-acquirente__dash-collapse-body">
+              <h2 id="da-elimina-account" class="visually-hidden">Elimina account</h2>
+              <p class="small text-muted mb-3 mb-md-4">
+                Rimuove definitivamente il tuo profilo, le recensioni che hai scritto e stacca le tue offerte dalle aste. Non puoi
+                annullare questa operazione.
+              </p>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-danger"
+                (click)="eliminaAccount()"
+                [disabled]="eliminazioneAccountInCorso"
+              >
+                {{ eliminazioneAccountInCorso ? 'Eliminazione…' : 'Elimina il mio account' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    }
+  </div>
+</div>

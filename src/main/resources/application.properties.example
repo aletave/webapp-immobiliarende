@@ -1,0 +1,30 @@
+spring.application.name=webapp
+
+# Database PostgreSQL
+spring.datasource.url=jdbc:postgresql://localhost:5432/webapp_exam
+spring.datasource.username=postgres
+spring.datasource.password=YOUR_DB_PASSWORD
+
+spring.sql.init.mode=always
+# Obbligatorio con data.sql: Hibernate crea/aggiorna lo schema prima del seed (Boot 2.5+).
+spring.jpa.defer-datasource-initialization=true
+
+# JPA ? crea le tabelle automaticamente
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+# URL base usata per costruire link alle immagini salvate nel DB (GET /api/foto/{id}/file)
+app.server-url=http://localhost:8080
+
+spring.servlet.multipart.max-file-size=20MB
+spring.servlet.multipart.max-request-size=25MB
+# Parsing multipart dopo i filtri di sicurezza: evita contesti anonimi su POST /api/foto/upload.
+spring.servlet.multipart.resolve-lazily=true
+
+# Default Tomcat ~2MB: se inferiore a max-request-size la POST multipart viene troncata senza header CORS → errore CORS in browser.
+server.tomcat.max-http-form-post-size=30MB
+
+# JWT
+jwt.secret=YOUR_JWT_SECRET_MIN_32_CHARS
+jwt.expiration=86400000

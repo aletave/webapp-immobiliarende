@@ -1,0 +1,160 @@
+.annuncio-card {
+  cursor: pointer;
+  overflow: hidden;
+  border: none;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-card);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+
+  &:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-6px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+.annuncio-card__media {
+  flex-shrink: 0;
+  height: clamp(180px, 42vw, 220px);
+  overflow: hidden;
+  background: var(--color-surface-alt);
+}
+
+/** Label accanto al prezzo: allineata ai badge tipo (Outfit), stile outline leggero. */
+.annuncio-card__asta-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+  background: transparent;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.annuncio-card__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.annuncio-card:hover .annuncio-card__img {
+  transform: scale(1.05);
+}
+
+.annuncio-card__placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: var(--color-surface-alt);
+}
+
+.annuncio-card__placeholder-icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  color: var(--color-secondary);
+}
+
+.annuncio-card__body {
+  padding: clamp(1rem, 3vw, 1.25rem) clamp(1rem, 3vw, 1.5rem);
+}
+
+.annuncio-card__title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: clamp(1.05rem, 2.8vw, 1.2rem);
+  color: var(--color-text);
+  line-height: 1.3;
+  margin-bottom: 0.25rem;
+}
+
+.annuncio-badge-tipo {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.annuncio-badge-tipo--vendita {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.annuncio-badge-tipo--affitto {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.annuncio-card__categoria {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.annuncio-card__prezzo-vecchio {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  color: var(--color-text-muted);
+  font-size: 1rem;
+}
+
+.annuncio-card__prezzo {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: var(--color-accent);
+  line-height: 1;
+}
+
+.annuncio-card__superficie {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.annuncio-card__label {
+  color: var(--color-text-muted);
+}
+
+.annuncio-card__footer {
+  border-top: 1px solid var(--color-border);
+  padding-top: 0.75rem;
+  margin-top: 0.75rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.annuncio-card__seller {
+  display: block;
+}
+
+.annuncio-card__seller-di {
+  font-weight: 300;
+  margin-right: 0.25rem;
+}
+
+.annuncio-card__venditore {
+  font-weight: 400;
+  color: var(--color-text-muted);
+  max-width: 100%;
+}

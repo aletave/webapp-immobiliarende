@@ -1,0 +1,92 @@
+<nav class="navbar navbar-expand-lg navbar-dark app-navbar">
+  <div class="container-fluid app-navbar__container">
+    <a class="navbar-brand app-navbar__brand me-auto" routerLink="/home" (click)="closeMobileNav()">
+      <span class="app-navbar__brand-text">ImmobiliaRende</span>
+      <span class="app-navbar__brand-line" aria-hidden="true"></span>
+    </a>
+
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarMain"
+      aria-controls="navbarMain"
+      aria-expanded="false"
+      aria-label="Apri menu"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div
+      class="collapse navbar-collapse app-navbar__collapse justify-content-lg-end"
+      id="navbarMain"
+      (click)="onNavbarMainClick($event)"
+    >
+      @if (!user) {
+        <ul class="navbar-nav mb-2 mb-lg-0 app-navbar__nav-links">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/login" routerLinkActive="active">Accedi</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/register" routerLinkActive="active">Registrazione</a>
+          </li>
+        </ul>
+      } @else {
+        <div class="d-flex flex-column flex-lg-row align-items-lg-center app-navbar__logged">
+          @if (user.ruolo === 'ACQUIRENTE' || user.ruolo === 'VENDITORE' || user.ruolo === 'ADMIN') {
+            <ul class="navbar-nav mb-2 mb-lg-0 app-navbar__nav-links">
+              @if (user.ruolo === 'ACQUIRENTE') {
+                <li class="nav-item">
+                  <a
+                    class="nav-link"
+                    routerLink="/home"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    >Home</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" routerLink="/dashboard/acquirente" routerLinkActive="active"
+                    >Dashboard acquirente</a
+                  >
+                </li>
+              } @else if (user.ruolo === 'VENDITORE') {
+                <li class="nav-item">
+                  <a
+                    class="nav-link"
+                    routerLink="/home"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    >Home</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" routerLink="/dashboard/venditore" routerLinkActive="active"
+                    >Dashboard venditore</a
+                  >
+                </li>
+              } @else if (user.ruolo === 'ADMIN') {
+                <li class="nav-item">
+                  <a
+                    class="nav-link"
+                    routerLink="/home"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    >Home</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" routerLink="/dashboard/admin" routerLinkActive="active">Dashboard admin</a>
+                </li>
+              }
+            </ul>
+          }
+
+          <div class="d-flex flex-column flex-sm-row align-items-sm-center app-navbar__session">
+            <button type="button" class="btn btn-logout-nav" (click)="logout()">Logout</button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</nav>

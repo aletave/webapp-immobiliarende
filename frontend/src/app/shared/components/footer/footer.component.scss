@@ -1,0 +1,28 @@
+.app-footer {
+  background: var(--color-primary);
+  border-top: none;
+}
+
+.app-footer__inner {
+  padding: clamp(1rem, 3vw, 1.5rem) 0;
+  padding-bottom: max(clamp(1rem, 3vw, 1.5rem), env(safe-area-inset-bottom, 0px));
+  text-align: center;
+}
+
+.app-footer__line {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.app-footer__brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--color-accent);
+  letter-spacing: 0.03em;
+}
+
+.app-footer__tagline {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.5);
+}

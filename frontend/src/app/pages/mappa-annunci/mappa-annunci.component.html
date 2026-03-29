@@ -1,0 +1,52 @@
+<div class="mappa-annunci">
+  <div class="container py-4 mappa-annunci__inner">
+    <header class="mappa-annunci__header mb-4">
+      <h1 class="mappa-annunci__title">Mappa degli annunci</h1>
+      <p class="mappa-annunci__subtitle text-muted mb-0">
+        Tutti gli immobili con coordinate su OpenStreetMap — clicca un marker per i dettagli.
+      </p>
+    </header>
+
+    <div class="mappa-annunci__map-wrap">
+      <aside
+        class="mappa-annunci__search"
+        aria-label="Cerca immobile sulla mappa"
+      >
+        <p class="mappa-annunci__search-title">Cerca immobile</p>
+        <div class="mappa-annunci__search-field">
+          <label for="mappa-filtro-tipo">Tipo offerta</label>
+          <select
+            id="mappa-filtro-tipo"
+            name="mappa-filtro-tipo"
+            [(ngModel)]="filterTipo"
+            (ngModelChange)="onFiltroTipoChange()"
+          >
+            <option value="">Tutti (affitto e vendita)</option>
+            <option value="AFFITTO">Solo affitto</option>
+            <option value="VENDITA">Solo vendita</option>
+          </select>
+        </div>
+        @if (!filterTipo) {
+          <p class="mappa-annunci__legend" role="status">
+            <span class="mappa-annunci__legend-item">
+              <span class="mappa-annunci__pin-dot mappa-annunci__pin-dot--vendita" aria-hidden="true"></span>
+              Vendita
+            </span>
+            <span class="mappa-annunci__legend-item">
+              <span class="mappa-annunci__pin-dot mappa-annunci__pin-dot--affitto" aria-hidden="true"></span>
+              Affitto
+            </span>
+          </p>
+        }
+      </aside>
+      <div
+        id="mappa-leaflet"
+        class="mappa-annunci__map"
+        role="application"
+        aria-label="Mappa interattiva degli annunci"
+      ></div>
+    </div>
+
+    <p class="small text-muted mt-3 mb-0">Clicca su un marker per vedere i dettagli dell'annuncio</p>
+  </div>
+</div>

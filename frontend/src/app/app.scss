@@ -1,0 +1,15 @@
+/**
+ * Shell verticale: navbar, contenuto flessibile, footer in fondo quando la pagina è corta.
+ */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-shell {
+  flex: 1 0 auto;
+  /* 56px ≈ navbar; dvh/svh evita salti con barra indirizzi mobile */
+  min-height: calc(100vh - 56px);
+  min-height: calc(100dvh - 56px);
+}

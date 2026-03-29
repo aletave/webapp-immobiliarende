@@ -1,0 +1,1059 @@
+<div class="dashboard-venditore animate-fadeup">
+  <div
+    class="dashboard-venditore__page"
+    [class.dashboard-venditore__page--solo-nuovo]="soloFormNuovoAnnuncio"
+  >
+    @if (!soloFormNuovoAnnuncio) {
+    <header class="mb-4 dashboard-venditore__header">
+      <div class="d-flex flex-column flex-md-row flex-wrap justify-content-between align-items-stretch align-items-md-start gap-3">
+        <div class="flex-grow-1 min-w-0">
+          <h1 class="mb-1 dashboard-venditore__title">Benvenuto {{ nomeBenvenuto }}</h1>
+          <p class="dashboard-venditore__subtitle mb-0">
+            Dashboard venditore — Gestisci i tuoi annunci immobiliari
+          </p>
+        </div>
+        <div class="d-flex flex-column flex-sm-row gap-2 align-items-stretch align-items-sm-center flex-shrink-0 dashboard-venditore__header-actions">
+          @if (isAdmin) {
+            <a
+              routerLink="/dashboard/admin"
+              class="btn btn-sm btn-outline-primary dashboard-venditore__btn-admin order-sm-0"
+            >
+              Pannello amministrazione
+            </a>
+          }
+          <button type="button" class="btn btn-accent btn-nuovo-annuncio" (click)="apriNuovo()">
+            <span class="dashboard-venditore__icon-plus" aria-hidden="true">+</span>
+            Nuovo annuncio
+          </button>
+        </div>
+      </div>
+    </header>
+
+    @if (messaggio) {
+      <p class="alert alert-success mb-3 dashboard-venditore__flash dashboard-venditore__flash--success">{{ messaggio }}</p>
+    }
+    @if (errore) {
+      <p class="alert alert-danger mb-3 dashboard-venditore__flash dashboard-venditore__flash--danger">{{ errore }}</p>
+    }
+
+    <section class="mb-4 dashboard-venditore__notifiche" aria-label="Aggiornamenti e avvisi">
+      <div class="row g-3">
+        @if (totaleMessaggiNonLetti > 0) {
+          <div class="col-12" [class.col-xl-4]="notificheMultiColonna">
+            <div
+              class="alert border-0 shadow-sm mb-0 h-100 dashboard-venditore__messaggi-notifica"
+              role="status"
+              aria-live="polite"
+            >
+              <p class="mb-2 fw-semibold">Nuovi messaggi di contatto</p>
+              <ul class="mb-0 ps-3 small">
+                @for (r of riepilogoMessaggiNonLetti; track r.annuncioId) {
+                  <li>
+                    <strong>{{ r.numNonLetti }}</strong>
+                    {{ r.numNonLetti === 1 ? 'messaggio non letto' : 'messaggi non letti' }} per «{{ r.titoloAnnuncio }}»
+                  </li>
+                }
+              </ul>
+              <p class="small text-muted mb-0 mt-2">{{ totaleMessaggiNonLetti }} in totale — usa «Messaggi» nel menu Azioni sulla tabella annunci.</p>
+            </div>
+          </div>
+        }
+
+        @if (!loading && totaleNuoveOfferteAste > 0) {
+          <div class="col-12" [class.col-xl-4]="notificheMultiColonna">
+            <div
+              class="alert border-0 shadow-sm mb-0 h-100 dashboard-venditore__aste-notifica"
+              role="status"
+              aria-live="polite"
+            >
+              <div class="d-flex flex-wrap align-items-start justify-content-between gap-3">
+                <div>
+                  <p class="mb-1 fw-semibold">Nuove offerte sulle aste</p>
+                  <p class="mb-0 small text-muted">
+                    {{ totaleNuoveOfferteAste === 1 ? 'Un’asta' : totaleNuoveOfferteAste + ' aste' }} con offerta aggiornata dalla tabella «Aste» sotto.
+                  </p>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-primary flex-shrink-0" (click)="segnaOfferteAsteViste()">
+                  Segna come viste
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+
+        @if (!loading && nuoveRichiesteVisitaElenco.length > 0) {
+          <div class="col-12" [class.col-xl-4]="notificheMultiColonna">
+            <div
+              class="alert border-0 shadow-sm mb-0 h-100 dashboard-venditore__visite-notifica"
+              role="status"
+              aria-live="polite"
+            >
+              <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-2">
+                <p class="mb-0 fw-semibold">
+                  {{
+                    nuoveRichiesteVisitaElenco.length === 1
+                      ? 'Nuova richiesta di visita'
+                      : 'Nuove richieste di visita'
+                  }}
+                </p>
+                <div class="d-flex flex-wrap gap-2 flex-shrink-0">
+                  <button type="button" class="btn btn-sm btn-outline-primary" (click)="apriSezioneRichiesteVisita()">
+                    Apri sezione
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-primary" (click)="segnaVisiteViste()">
+                    Segna come viste
+                  </button>
+                </div>
+              </div>
+              <ul class="mb-0 ps-3 small">
+                @for (ap of nuoveRichiesteVisitaElenco; track ap.id) {
+                  <li>
+                    @if (ap.annuncioId != null) {
+                      <a [routerLink]="['/annunci', ap.annuncioId]" class="dashboard-venditore__visite-notifica-link">{{
+                        ap.titoloAnnuncio?.trim() ? '«' + ap.titoloAnnuncio + '»' : 'Annuncio #' + ap.annuncioId
+                      }}</a>
+                    } @else {
+                      <span>Annuncio</span>
+                    }
+                    — {{ nomeAcquirenteAppuntamento(ap) }}
+                  </li>
+                }
+              </ul>
+              <p class="small text-muted mb-0 mt-2">
+                Conferma o completa dalla tabella «Richieste di visita» sotto.
+              </p>
+            </div>
+          </div>
+        }
+
+        @if (!loading && nuoveRecensioniCount > 0) {
+          <div class="col-12" [class.col-xl-4]="notificheMultiColonna">
+            <div
+              class="alert border-0 shadow-sm mb-0 h-100 dashboard-venditore__recensioni-notifica"
+              role="status"
+              aria-live="polite"
+            >
+              <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-2">
+                <p class="mb-0 fw-semibold">
+                  {{ nuoveRecensioniCount === 1 ? 'Nuova recensione' : 'Nuove recensioni' }}
+                </p>
+                <button type="button" class="btn btn-sm btn-outline-primary flex-shrink-0" (click)="segnaRecensioniViste()">
+                  Segna come lette
+                </button>
+              </div>
+              <ul class="mb-0 ps-3 small">
+                @for (r of nuoveRecensioniElenco; track r.id) {
+                  <li>
+                    @if (r.annuncioId != null) {
+                      <a [routerLink]="['/annunci', r.annuncioId]" class="dashboard-venditore__recensione-link">{{
+                        r.annuncioTitolo?.trim() ? '«' + r.annuncioTitolo + '»' : 'Annuncio #' + r.annuncioId
+                      }}</a>
+                    } @else {
+                      <span>Annuncio</span>
+                    }
+                    — {{ nomeCompletoAutoreRecensione(r) }}, {{ r.voto }}/5
+                  </li>
+                }
+              </ul>
+              <p class="small text-muted mb-0 mt-2">Apri l’annuncio per il testo completo.</p>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+
+    }
+
+    @if (mostraForm) {
+      <div id="dv-form-annuncio" class="card border-0 mb-4 dashboard-venditore__surface dashboard-venditore__form-card">
+        <div class="card-body">
+          @if (soloFormNuovoAnnuncio) {
+            @if (messaggio) {
+              <p class="alert alert-success mb-3 dashboard-venditore__flash dashboard-venditore__flash--success">{{ messaggio }}</p>
+            }
+            @if (errore) {
+              <p class="alert alert-danger mb-3 dashboard-venditore__flash dashboard-venditore__flash--danger">{{ errore }}</p>
+            }
+          }
+          <h2 class="h5">{{ editingId == null ? 'Nuovo annuncio' : 'Modifica annuncio' }}</h2>
+          <form [formGroup]="annuncioForm" (ngSubmit)="salvaAnnuncio()" class="row g-3">
+            <div class="col-12">
+              <label class="form-label" for="dv-titolo">Titolo</label>
+              <input id="dv-titolo" class="form-control" formControlName="titolo" />
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="dv-desc">Descrizione</label>
+              <textarea id="dv-desc" class="form-control" rows="3" formControlName="descrizione"></textarea>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="dv-prezzo">Prezzo (€)</label>
+              <input
+                id="dv-prezzo"
+                type="number"
+                class="form-control"
+                [class.is-invalid]="annuncioForm.get('prezzo')?.invalid && annuncioForm.get('prezzo')?.touched"
+                formControlName="prezzo"
+                step="0.01"
+                min="0.01"
+              />
+              @if (annuncioForm.get('prezzo')?.invalid && annuncioForm.get('prezzo')?.touched) {
+                <div class="invalid-feedback d-block">Inserisci un prezzo tra 0,01 e 999.999.999,99 €.</div>
+              }
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="dv-mq">Mq</label>
+              <input id="dv-mq" type="number" class="form-control" formControlName="mq" min="1" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="dv-cat">Categoria</label>
+              <select id="dv-cat" class="form-select" formControlName="categoria">
+                @for (c of categorie; track c) {
+                  <option [ngValue]="c">{{ c }}</option>
+                }
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="dv-tipo">Tipo</label>
+              <select id="dv-tipo" class="form-select" formControlName="tipo">
+                @for (t of tipi; track t) {
+                  <option [ngValue]="t">{{ t }}</option>
+                }
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label">
+                Posizione
+                <small class="text-muted fw-normal ms-1">
+                  — clicca sulla mappa oppure inserisci l’indirizzo e verifica
+                </small>
+              </label>
+              <div class="dashboard-venditore__indirizzo-manuale mb-3">
+                <input
+                  id="dv-indirizzo"
+                  type="text"
+                  class="form-control"
+                  formControlName="indirizzo"
+                  placeholder="Es. Via Roma 1, Rende"
+                  autocomplete="street-address"
+                />
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary flex-shrink-0"
+                  (click)="verificaIndirizzoManuale()"
+                  [disabled]="geocodingIndirizzoManuale || reverseGeocoding"
+                >
+                  {{ geocodingIndirizzoManuale ? 'Verifica…' : 'Verifica' }}
+                </button>
+              </div>
+              @if (erroreIndirizzoManuale) {
+                <div class="small text-danger mb-2">{{ erroreIndirizzoManuale }}</div>
+              }
+              <div
+                id="form-map"
+                class="dashboard-venditore__form-map"
+                style="
+                  height: 300px;
+                  border-radius: 12px;
+                  overflow: hidden;
+                  border: 1px solid var(--color-border);
+                  cursor: crosshair;
+                "
+                role="application"
+                aria-label="Mappa per selezione posizione"
+              ></div>
+              <div class="mt-2">
+                @if (reverseGeocoding || geocodingIndirizzoManuale) {
+                  <small class="text-muted">
+                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                    Recupero indirizzo...
+                  </small>
+                } @else if (annuncioForm.get('indirizzo')?.value) {
+                  <small class="text-success">
+                    📍 {{ annuncioForm.get('indirizzo')?.value }}
+                  </small>
+                } @else {
+                  <small class="text-muted">Nessuna posizione selezionata</small>
+                }
+              </div>
+            </div>
+            <div class="col-12">
+              @if (editingId != null) {
+                <div class="mb-3 dashboard-venditore__foto-attuali">
+                  <p class="form-label mb-2">Foto attuali</p>
+                  @if (fotoEsistentiLoading) {
+                    <p class="small text-muted mb-0">Caricamento anteprime…</p>
+                  } @else if (fotoEsistenti.length === 0) {
+                    <p class="small text-muted mb-0">Nessuna foto caricata per questo annuncio.</p>
+                  } @else {
+                    <div class="row g-2 dashboard-venditore__foto-griglia">
+                      @for (f of fotoEsistenti; track f.id) {
+                        <div class="col-6 col-md-4 col-lg-3">
+                          <div class="dashboard-venditore__foto-thumb-wrap">
+                            <a
+                              [href]="f.url"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              class="dashboard-venditore__foto-thumb-link"
+                              title="Apri immagine a dimensione piena"
+                            >
+                              <img
+                                [src]="f.url"
+                                class="img-fluid rounded dashboard-venditore__foto-thumb"
+                                alt="Foto annuncio"
+                                loading="lazy"
+                              />
+                            </a>
+                            <button
+                              type="button"
+                              class="btn btn-sm btn-outline-danger w-100 mt-2 dashboard-venditore__foto-rimuovi d-inline-flex align-items-center justify-content-center gap-2"
+                              (click)="rimuoviFotoEsistente(f)"
+                              [disabled]="eliminazioneFotoId === f.id"
+                              [attr.aria-label]="
+                                eliminazioneFotoId === f.id ? 'Rimozione foto in corso' : 'Rimuovi foto'
+                              "
+                            >
+                              @if (eliminazioneFotoId === f.id) {
+                                Rimozione…
+                              } @else {
+                                <app-icon-trash />
+                              }
+                            </button>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+              <label class="form-label" for="dv-foto">Foto (opzionale)</label>
+              <input
+                id="dv-foto"
+                type="file"
+                class="form-control dashboard-venditore__file-input"
+                accept="image/jpeg,image/png,image/gif,image/webp"
+                multiple
+                [disabled]="editingId != null && fotoEsistentiLoading"
+                (change)="onFotoSelezionate($event)"
+              />
+              <p class="form-text small text-muted mb-2">
+                Fino a {{ maxFotoPerAnnuncio }} immagini, max {{ maxMegabytesFoto }} MB ciascuna (JPEG, PNG, GIF, WebP). Verranno salvate dopo il salvataggio dell’annuncio.
+              </p>
+              @if (fotoFileDaCaricare.length > 0) {
+                <ul class="list-unstyled small mb-0 dashboard-venditore__foto-coda">
+                  @for (f of fotoFileDaCaricare; track $index) {
+                    <li class="d-flex align-items-center justify-content-between gap-2 py-1 border-bottom">
+                      <span class="text-truncate">{{ f.name }}</span>
+                      <button type="button" class="btn btn-sm btn-link text-danger p-0" (click)="rimuoviFotoInCoda($index)">Rimuovi</button>
+                    </li>
+                  }
+                </ul>
+              }
+            </div>
+            <div class="col-12 d-flex gap-2">
+              <button type="submit" class="btn btn-success" [disabled]="!salvaAnnuncioAbilitato">Salva</button>
+              <button type="button" class="btn btn-outline-secondary" (click)="annullaForm()">Annulla</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    }
+
+    @if (!soloFormNuovoAnnuncio && (ribassaForm.get('annuncioId')?.value ?? 0) > 0) {
+      <div
+        id="dv-sezione-ribassa"
+        class="card border-0 mb-4 dashboard-venditore__surface dashboard-venditore__surface--ribassa dashboard-venditore__dash-collapse-section"
+        [formGroup]="ribassaForm"
+      >
+        <div class="card-body p-0">
+          <button
+            type="button"
+            class="dashboard-venditore__dash-collapse-toggle"
+            data-bs-toggle="collapse"
+            data-bs-target="#dv-collapse-ribassa"
+            aria-expanded="true"
+            aria-controls="dv-collapse-ribassa"
+          >
+            <span class="dashboard-venditore__dash-collapse-title dashboard-venditore__section-title">Ribassa prezzo</span>
+            <span class="dashboard-venditore__dash-collapse-chevron" aria-hidden="true">▾</span>
+          </button>
+          <div id="dv-collapse-ribassa" class="collapse show">
+            <div class="dashboard-venditore__dash-collapse-body">
+              <input type="hidden" formControlName="annuncioId" />
+              <div class="row g-3 align-items-end">
+          <div class="col-12">
+            <p class="form-label mb-2">Tipo di ribasso</p>
+            <div class="d-flex flex-wrap gap-3">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  formControlName="modalitaRibasso"
+                  id="dv-ribassa-perm"
+                  value="permanente"
+                />
+                <label class="form-check-label" for="dv-ribassa-perm">Permanente (fino a nuova modifica)</label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  formControlName="modalitaRibasso"
+                  id="dv-ribassa-temp"
+                  value="temporaneo"
+                />
+                <label class="form-check-label" for="dv-ribassa-temp">Temporaneo (promo con data di fine)</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="dv-ribassa-prezzo">Nuovo prezzo (€)</label>
+            <input id="dv-ribassa-prezzo" type="number" class="form-control" formControlName="nuovoPrezzo" step="0.01" min="0.01" />
+          </div>
+          @if (ribassaForm.get('modalitaRibasso')?.value === 'temporaneo') {
+            <div class="col-md-5">
+              <label class="form-label" for="dv-ribassa-fine">Fine promo (data e ora locali)</label>
+              <input id="dv-ribassa-fine" type="datetime-local" class="form-control" formControlName="ribassoFine" />
+              <p class="small text-muted mb-0 mt-1">Al termine, il prezzo torna automaticamente al valore precedente.</p>
+            </div>
+          }
+          <div class="col-md-auto">
+            <button type="button" class="btn btn-warning" (click)="inviaRibassa()">Applica ribasso</button>
+          </div>
+          <div class="col-md-auto">
+            <button
+              type="button"
+              class="btn btn-link"
+              (click)="ribassaForm.patchValue({ annuncioId: 0, nuovoPrezzo: 0, modalitaRibasso: 'permanente', ribassoFine: '' })"
+            >
+              Chiudi
+            </button>
+          </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (!soloFormNuovoAnnuncio && (astaForm.get('annuncioId')?.value ?? 0) > 0) {
+      <div
+        id="dv-sezione-asta"
+        class="card border-0 mb-4 dashboard-venditore__surface dashboard-venditore__surface--asta dashboard-venditore__dash-collapse-section"
+      >
+        <div class="card-body p-0">
+          <button
+            type="button"
+            class="dashboard-venditore__dash-collapse-toggle"
+            data-bs-toggle="collapse"
+            data-bs-target="#dv-collapse-asta-form"
+            aria-expanded="true"
+            aria-controls="dv-collapse-asta-form"
+          >
+            <span class="dashboard-venditore__dash-collapse-title dashboard-venditore__section-title">Nuova asta</span>
+            <span class="dashboard-venditore__dash-collapse-chevron" aria-hidden="true">▾</span>
+          </button>
+          <div id="dv-collapse-asta-form" class="collapse show">
+            <div class="dashboard-venditore__dash-collapse-body">
+          <form [formGroup]="astaForm" (ngSubmit)="creaAsta()" class="row g-2 align-items-end">
+            <input type="hidden" formControlName="annuncioId" />
+            <div class="col-md-3">
+              <label class="form-label">Prezzo base (€)</label>
+              <input type="number" class="form-control" formControlName="prezzoBase" step="0.01" min="0.01" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Scadenza</label>
+              <input type="datetime-local" class="form-control" formControlName="scadenza" />
+            </div>
+            <div class="col-md-auto">
+              <button type="submit" class="btn btn-info text-white" [disabled]="astaForm.invalid">Crea asta</button>
+            </div>
+            <div class="col-md-auto">
+              <button type="button" class="btn btn-link" (click)="astaForm.patchValue({ annuncioId: 0, prezzoBase: 0, scadenza: '' })">Chiudi</button>
+            </div>
+          </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (!soloFormNuovoAnnuncio) {
+    <section
+      class="dashboard-venditore__sezione-annunci mb-4 dashboard-venditore__dash-collapse-section"
+      aria-labelledby="dv-annunci-elenco"
+    >
+      <div class="card border-0 dashboard-venditore__surface dashboard-venditore__dash-collapse-card">
+        <div class="card-body p-0">
+          <button
+            type="button"
+            id="dv-annunci-elenco"
+            class="dashboard-venditore__dash-collapse-toggle"
+            data-bs-toggle="collapse"
+            data-bs-target="#dv-collapse-annunci"
+            aria-expanded="true"
+            aria-controls="dv-collapse-annunci"
+          >
+            <span class="dashboard-venditore__dash-collapse-title dashboard-venditore__section-title">I tuoi annunci</span>
+            @if (!loading) {
+              <span class="badge bg-secondary">{{ annunci.length }}</span>
+            }
+            <span class="dashboard-venditore__dash-collapse-chevron" aria-hidden="true">▾</span>
+          </button>
+          <div id="dv-collapse-annunci" class="collapse show">
+            <div class="dashboard-venditore__dash-collapse-body">
+    @if (loading) {
+      <p class="text-muted mb-0">Caricamento…</p>
+    } @else if (annunci.length === 0) {
+      <p class="text-muted mb-0">Non hai ancora annunci. Creane uno con il pulsante sopra.</p>
+    } @else {
+      <!-- Desktop: tabella -->
+      <div class="d-none d-md-block dashboard-venditore__table-card">
+        <div class="table-responsive">
+          <table class="table align-middle dashboard-venditore__table mb-0">
+            <thead>
+              <tr>
+                <th>Titolo</th>
+                <th>Prezzo</th>
+                <th>Tipo</th>
+                <th class="text-end">Azioni</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (a of annunciPagina; track a.id) {
+                <tr
+                  class="dashboard-venditore__row"
+                  [class.dashboard-venditore__row--messaggi-nuovi]="annuncioHaMessaggiNuovi(a.id)"
+                >
+                  <td class="dashboard-venditore__td dashboard-venditore__td--titolo" data-label="Titolo">
+                    <span class="dashboard-venditore__cell-value">{{ a.titolo }}</span>
+                  </td>
+                  <td class="dashboard-venditore__td" data-label="Prezzo">
+                    <span class="dashboard-venditore__cell-value">
+                      @if (annuncioHaRibassoDaAnnullare(a)) {
+                        <span class="text-decoration-line-through text-muted me-1">{{ a.prezzoPrecedente | number: '1.0-2' }} €</span>
+                      }
+                      <span>{{ a.prezzo | number: '1.0-2' }} €</span>
+                      @if (ribassoTemporaneoAttivo(a)) {
+                        <span class="badge bg-warning text-dark ms-1">Promo fino al {{ a.ribassoFine | date: 'short' }}</span>
+                      }
+                    </span>
+                  </td>
+                  <td class="dashboard-venditore__td" data-label="Tipo">
+                    <span class="dashboard-venditore__cell-value">
+                      <span class="badge bg-primary badge-tipo">{{ a.tipo }}</span>
+                    </span>
+                  </td>
+                  <td class="dashboard-venditore__td dashboard-venditore__td--azioni text-end" data-label="Azioni">
+                    <span class="dashboard-venditore__cell-value dashboard-venditore__cell-value--actions">
+                      <div class="dropdown dashboard-venditore__row-actions">
+                        <button
+                          class="btn btn-sm btn-outline-secondary dropdown-toggle dashboard-venditore__dropdown-btn dashboard-venditore__dropdown-btn--azioni"
+                          type="button"
+                          [id]="'dv-dropdown-' + a.id"
+                          data-bs-toggle="dropdown"
+                          data-bs-boundary="viewport"
+                          data-bs-popper-config='{"strategy":"fixed"}'
+                          aria-expanded="false"
+                          aria-haspopup="true"
+                          aria-label="Azioni per annuncio"
+                        >
+                          Azioni
+                        </button>
+                        <ul
+                          class="dropdown-menu dropdown-menu-end text-start dashboard-venditore__dropdown-menu dashboard-venditore__dropdown-menu--azioni shadow"
+                          [attr.aria-labelledby]="'dv-dropdown-' + a.id"
+                        >
+                          <li>
+                            <a class="dropdown-item dashboard-venditore__dropdown-item--azioni" [routerLink]="['/annunci', a.id]">Vedi annuncio</a>
+                          </li>
+                          <li>
+                            <button
+                              type="button"
+                              class="dropdown-item dashboard-venditore__dropdown-item--azioni d-flex align-items-center justify-content-between gap-2 w-100"
+                              (click)="caricaMessaggi(a.id)"
+                            >
+                              <span>Messaggi</span>
+                              @if (numNonLettiAnnuncio(a.id) > 0) {
+                                <span class="badge bg-danger flex-shrink-0">{{ numNonLettiAnnuncio(a.id) }}</span>
+                              }
+                            </button>
+                          </li>
+                          <li>
+                            <button type="button" class="dropdown-item dashboard-venditore__dropdown-item--azioni" (click)="modifica(a)">Modifica</button>
+                          </li>
+                          <li>
+                            <button type="button" class="dropdown-item dashboard-venditore__dropdown-item--azioni" (click)="apriRibassa(a)">Ribassa prezzo</button>
+                          </li>
+                          <li>
+                            <button
+                              type="button"
+                              class="dropdown-item dashboard-venditore__dropdown-item--azioni"
+                              [disabled]="!annuncioHaRibassoDaAnnullare(a)"
+                              [attr.title]="!annuncioHaRibassoDaAnnullare(a) ? tooltipRipristinoListinoDisabilitato : null"
+                              (click)="ripristinaPrezzoListino(a)"
+                            >
+                              Ripristina prezzo listino
+                            </button>
+                          </li>
+                          <li>
+                            <button type="button" class="dropdown-item dashboard-venditore__dropdown-item--azioni" (click)="apriAsta(a)">Crea asta</button>
+                          </li>
+                          <li><hr class="dropdown-divider dashboard-venditore__dropdown-divider--azioni" /></li>
+                          <li>
+                            <button
+                              type="button"
+                              class="dropdown-item dashboard-venditore__dropdown-item--azioni dashboard-venditore__dropdown-item--danger text-danger d-flex align-items-center gap-2"
+                              (click)="elimina(a)"
+                            >
+                              <span class="dashboard-venditore__dropdown-danger-icon flex-shrink-0" aria-hidden="true"><app-icon-trash /></span>
+                              <span>Elimina annuncio</span>
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Mobile: card annunci (la sezione «I tuoi annunci» è già collassabile) -->
+      <div class="d-md-none dashboard-venditore__annunci-mobile-wrap">
+        <div class="dashboard-venditore__annunci-mobile pt-2" role="list">
+            @for (a of annunciPagina; track a.id) {
+              <div
+                class="card border-0 shadow-sm mb-2 dashboard-venditore__annuncio-mobile"
+                [class.dashboard-venditore__annuncio-mobile--nuovi]="annuncioHaMessaggiNuovi(a.id)"
+                role="listitem"
+              >
+                <div class="card-body py-3 px-3">
+                  <p class="fw-semibold mb-2 text-body small text-truncate" [title]="a.titolo">{{ a.titolo }}</p>
+                  <div class="mb-2 small">
+                    <div class="d-flex justify-content-between align-items-baseline gap-2">
+                      <span class="text-muted text-uppercase" style="letter-spacing: 0.06em">Prezzo</span>
+                      <span class="text-end">
+                        @if (annuncioHaRibassoDaAnnullare(a)) {
+                          <span class="text-decoration-line-through text-muted me-1">{{ a.prezzoPrecedente | number: '1.0-2' }} €</span>
+                        }
+                        <span class="fw-medium">{{ a.prezzo | number: '1.0-2' }} €</span>
+                      </span>
+                    </div>
+                    @if (ribassoTemporaneoAttivo(a)) {
+                      <div class="mt-1 text-end">
+                        <span class="badge bg-warning text-dark">Promo fino al {{ a.ribassoFine | date: 'short' }}</span>
+                      </div>
+                    }
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center gap-2 mb-3 small">
+                    <span class="text-muted text-uppercase" style="letter-spacing: 0.06em">Tipo</span>
+                    <span class="badge bg-primary">{{ a.tipo }}</span>
+                  </div>
+                  <div class="dropdown w-100 dashboard-venditore__dropdown--mobile">
+                    <button
+                      class="btn btn-sm btn-outline-secondary dropdown-toggle w-100 dashboard-venditore__dropdown-btn dashboard-venditore__dropdown-btn--azioni"
+                      type="button"
+                      [id]="'dv-dropdown-m-' + a.id"
+                      data-bs-toggle="dropdown"
+                      data-bs-display="static"
+                      aria-expanded="false"
+                      aria-haspopup="true"
+                      aria-label="Azioni per annuncio"
+                    >
+                      Azioni
+                    </button>
+                    <ul
+                      class="dropdown-menu w-100 text-start dashboard-venditore__dropdown-menu dashboard-venditore__dropdown-menu--azioni shadow"
+                      [attr.aria-labelledby]="'dv-dropdown-m-' + a.id"
+                    >
+                      <li>
+                        <a class="dropdown-item dashboard-venditore__dropdown-item--azioni" [routerLink]="['/annunci', a.id]">Vedi annuncio</a>
+                      </li>
+                      <li>
+                        <button
+                          type="button"
+                          class="dropdown-item dashboard-venditore__dropdown-item--azioni d-flex align-items-center justify-content-between gap-2 w-100"
+                          (click)="caricaMessaggi(a.id)"
+                        >
+                          <span>Messaggi</span>
+                          @if (numNonLettiAnnuncio(a.id) > 0) {
+                            <span class="badge bg-danger flex-shrink-0">{{ numNonLettiAnnuncio(a.id) }}</span>
+                          }
+                        </button>
+                      </li>
+                      <li>
+                        <button type="button" class="dropdown-item dashboard-venditore__dropdown-item--azioni" (click)="modifica(a)">
+                          Modifica
+                        </button>
+                      </li>
+                      <li>
+                        <button type="button" class="dropdown-item dashboard-venditore__dropdown-item--azioni" (click)="apriRibassa(a)">
+                          Ribassa prezzo
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          type="button"
+                          class="dropdown-item dashboard-venditore__dropdown-item--azioni"
+                          [disabled]="!annuncioHaRibassoDaAnnullare(a)"
+                          [attr.title]="!annuncioHaRibassoDaAnnullare(a) ? tooltipRipristinoListinoDisabilitato : null"
+                          (click)="ripristinaPrezzoListino(a)"
+                        >
+                          Ripristina prezzo listino
+                        </button>
+                      </li>
+                      <li>
+                        <button type="button" class="dropdown-item dashboard-venditore__dropdown-item--azioni" (click)="apriAsta(a)">
+                          Crea asta
+                        </button>
+                      </li>
+                      <li><hr class="dropdown-divider dashboard-venditore__dropdown-divider--azioni" /></li>
+                      <li>
+                        <button
+                          type="button"
+                          class="dropdown-item dashboard-venditore__dropdown-item--azioni dashboard-venditore__dropdown-item--danger text-danger d-flex align-items-center gap-2"
+                          (click)="elimina(a)"
+                        >
+                          <span class="dashboard-venditore__dropdown-danger-icon flex-shrink-0" aria-hidden="true"><app-icon-trash /></span>
+                          <span>Elimina annuncio</span>
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+      </div>
+
+      @if (totalePagineAnnunci > 1) {
+        <nav
+          class="dashboard-venditore__pagination"
+          aria-label="Paginazione elenco annunci"
+        >
+          <p class="dashboard-venditore__pagination-range small text-muted mb-0">
+            {{ annunciRangeLabel }}
+          </p>
+          <div class="dashboard-venditore__pagination-actions">
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-secondary dashboard-venditore__pagination-btn"
+              (click)="paginaPrecedenteAnnunci()"
+              [disabled]="paginaCorrenteAnnunci <= 1"
+            >
+              Precedente
+            </button>
+            <span class="dashboard-venditore__pagination-status" aria-current="page">
+              Pagina {{ paginaCorrenteAnnunci }} / {{ totalePagineAnnunci }}
+            </span>
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-secondary dashboard-venditore__pagination-btn"
+              (click)="paginaSuccessivaAnnunci()"
+              [disabled]="paginaCorrenteAnnunci >= totalePagineAnnunci"
+            >
+              Successiva
+            </button>
+          </div>
+        </nav>
+      }
+    }
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    @if (!loading) {
+      <section
+        class="card border-0 mb-4 dashboard-venditore__surface dashboard-venditore__appuntamenti dashboard-venditore__dash-collapse-section"
+        aria-labelledby="dv-sezione-visite"
+      >
+        <div class="card-body p-0">
+          <button
+            type="button"
+            id="dv-sezione-visite"
+            class="dashboard-venditore__dash-collapse-toggle"
+            data-bs-toggle="collapse"
+            data-bs-target="#dv-collapse-visite"
+            aria-expanded="false"
+            aria-controls="dv-collapse-visite"
+          >
+            <span class="dashboard-venditore__dash-collapse-title dashboard-venditore__section-title">Richieste di visita</span>
+            <span class="badge bg-secondary">{{ appuntamenti.length }}</span>
+            <span class="dashboard-venditore__dash-collapse-chevron" aria-hidden="true">▾</span>
+          </button>
+          <div id="dv-collapse-visite" class="collapse">
+            <div class="dashboard-venditore__dash-collapse-body">
+          @if (erroreAppuntamento) {
+            <p class="text-danger small mb-3 mb-0">{{ erroreAppuntamento }}</p>
+          }
+          @if (appuntamenti.length === 0) {
+            <p class="text-muted small mb-0">Nessuna richiesta di visita sugli annunci.</p>
+          } @else {
+            <div class="table-responsive dashboard-venditore__dash-collapse-table-flush">
+              <table class="table table-sm align-middle mb-0 dashboard-venditore__appuntamenti-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Annuncio</th>
+                    <th scope="col">Acquirente</th>
+                    <th scope="col">Richiesta</th>
+                    <th scope="col">Stato</th>
+                    <th scope="col" class="text-end">Azione</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (ap of appuntamenti; track ap.id) {
+                    <tr>
+                      <td>
+                        @if (ap.annuncioId != null) {
+                          <a [routerLink]="['/annunci', ap.annuncioId]" class="dashboard-venditore__aste-link">{{
+                            ap.titoloAnnuncio?.trim() ? ap.titoloAnnuncio : 'Annuncio #' + ap.annuncioId
+                          }}</a>
+                        } @else {
+                          <span>—</span>
+                        }
+                      </td>
+                      <td>{{ nomeAcquirenteAppuntamento(ap) }}</td>
+                      <td>
+                        <time [attr.datetime]="ap.createdAt">{{ ap.createdAt | date: 'short' }}</time>
+                      </td>
+                      <td>
+                        @if (ap.stato === 'PENDING') {
+                          <span class="badge text-bg-warning text-dark">In attesa</span>
+                        } @else if (ap.stato === 'RIFIUTATO') {
+                          <span class="badge text-bg-secondary">Rifiutata</span>
+                        } @else {
+                          <span class="badge text-bg-success">Completata</span>
+                        }
+                      </td>
+                      <td class="text-end">
+                        @if (ap.stato === 'PENDING') {
+                          <div class="d-inline-flex flex-wrap gap-1 justify-content-end">
+                            <button
+                              type="button"
+                              class="btn btn-sm btn-primary"
+                              (click)="segnaVisitaCompletata(ap)"
+                              [disabled]="completaAppuntamentoId === ap.id || rifiutaAppuntamentoId === ap.id"
+                            >
+                              @if (completaAppuntamentoId === ap.id) {
+                                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                              } @else {
+                                Segna completata
+                              }
+                            </button>
+                            <button
+                              type="button"
+                              class="btn btn-sm btn-outline-danger"
+                              (click)="segnaVisitaRifiutata(ap)"
+                              [disabled]="completaAppuntamentoId === ap.id || rifiutaAppuntamentoId === ap.id"
+                            >
+                              @if (rifiutaAppuntamentoId === ap.id) {
+                                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                              } @else {
+                                Rifiuta
+                              }
+                            </button>
+                          </div>
+                        } @else {
+                          <span class="text-muted small">—</span>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="card border-0 mb-4 dashboard-venditore__surface dashboard-venditore__aste dashboard-venditore__dash-collapse-section"
+        aria-labelledby="dv-sezione-aste"
+      >
+        <div class="card-body p-0">
+          <button
+            type="button"
+            id="dv-sezione-aste"
+            class="dashboard-venditore__dash-collapse-toggle"
+            data-bs-toggle="collapse"
+            data-bs-target="#dv-collapse-aste"
+            aria-expanded="false"
+            aria-controls="dv-collapse-aste"
+          >
+            <span class="dashboard-venditore__dash-collapse-title dashboard-venditore__section-title">Aste sui tuoi annunci</span>
+            <span class="badge bg-secondary">{{ asteVenditore.length }}</span>
+            <span class="dashboard-venditore__dash-collapse-chevron" aria-hidden="true">▾</span>
+          </button>
+          <div id="dv-collapse-aste" class="collapse">
+            <div class="dashboard-venditore__dash-collapse-body">
+          @if (asteVenditore.length === 0) {
+            <p class="text-muted small mb-0">
+              Non hai ancora un’asta associata a un annuncio. Dal menu «Azioni» sulla tabella scegli «Crea asta».
+            </p>
+          } @else {
+            <div class="table-responsive dashboard-venditore__dash-collapse-table-flush">
+              <table class="table table-sm align-middle mb-0 dashboard-venditore__aste-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Annuncio</th>
+                    <th scope="col">Offerta attuale</th>
+                    <th scope="col">Scadenza</th>
+                    <th scope="col" class="text-end">Stato</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (ev of asteVenditore; track ev.id) {
+                    <tr [class.dashboard-venditore__aste-row--nuova]="ev.nuovaOfferta === true">
+                      <td>
+                        <a [routerLink]="['/annunci', ev.annuncioId]" class="dashboard-venditore__aste-link">{{
+                          titoloAnnuncioAsta(ev)
+                        }}</a>
+                      </td>
+                      <td>{{ ev.offertaAttuale | number: '1.0-2' }} €</td>
+                      <td>
+                        <time [attr.datetime]="ev.scadenza">{{ ev.scadenza | date: 'short' }}</time>
+                      </td>
+                      <td class="text-end">
+                        @if (astaScaduta(ev.scadenza)) {
+                          <span class="badge bg-secondary">Terminata</span>
+                        } @else {
+                          <span class="badge bg-success">In corso</span>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+            </div>
+          </div>
+        </div>
+      </section>
+
+      @if (messaggiAnnuncioId !== null || messaggi.length > 0) {
+        <section
+          id="dv-panel-messaggi"
+          class="card border-0 mb-4 dashboard-venditore__surface dashboard-venditore__messaggi-panel dashboard-venditore__dash-collapse-section animate-scalein"
+          aria-labelledby="dv-messaggi-toggle"
+        >
+          <div class="card-body p-0">
+            <button
+              type="button"
+              id="dv-messaggi-toggle"
+              class="dashboard-venditore__dash-collapse-toggle"
+              data-bs-toggle="collapse"
+              data-bs-target="#dv-collapse-messaggi-panel"
+              aria-expanded="true"
+              aria-controls="dv-collapse-messaggi-panel"
+            >
+              <span class="dashboard-venditore__dash-collapse-title dashboard-venditore__section-title">Messaggi</span>
+              @if (messaggi.length > 0) {
+                <span class="badge bg-secondary">{{ messaggi.length }}</span>
+              }
+              <span class="dashboard-venditore__dash-collapse-chevron" aria-hidden="true">▾</span>
+            </button>
+            <div id="dv-collapse-messaggi-panel" class="collapse show">
+              <div class="dashboard-venditore__dash-collapse-body dashboard-venditore__messaggi-panel-body">
+                <button
+                  type="button"
+                  class="btn btn-link btn-sm dashboard-venditore__messaggi-close"
+                  (click)="chiudiMessaggi()"
+                  aria-label="Chiudi pannello messaggi"
+                >
+                  Chiudi
+                </button>
+                <p id="dv-messaggi-titolo" class="dashboard-venditore__messaggi-panel-subtitle mb-3">
+                  Annuncio: <span class="fw-semibold">{{ titoloMessaggiAnnuncio() }}</span>
+                </p>
+                @if (messaggi.length === 0) {
+                  <p class="text-muted mb-0">Nessun messaggio ricevuto.</p>
+                } @else {
+                  <div class="dashboard-venditore__messaggi-list">
+                    @for (m of messaggi; track m.id) {
+                      <article class="dashboard-venditore__messaggio-row">
+                        <div class="dashboard-venditore__messaggio-head">
+                          <div class="dashboard-venditore__messaggio-sender">
+                            <strong class="dashboard-venditore__messaggio-nome">{{ m.nomeMittente }}</strong>
+                            <span class="dashboard-venditore__messaggio-email small text-muted">{{ m.emailMittente }}</span>
+                          </div>
+                          <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                            @if (m.createdAt) {
+                              <time class="dashboard-venditore__messaggio-data small text-muted" [attr.datetime]="m.createdAt">{{
+                                m.createdAt | date: 'short'
+                              }}</time>
+                            }
+                            <button
+                              type="button"
+                              class="btn btn-sm btn-outline-danger d-inline-flex align-items-center justify-content-center px-2"
+                              (click)="eliminaMessaggioRicevuto(m)"
+                              [disabled]="eliminazioneMessaggioId !== null"
+                              [attr.aria-label]="
+                                eliminazioneMessaggioId === m.id ? 'Eliminazione messaggio in corso' : 'Elimina messaggio'
+                              "
+                            >
+                              @if (eliminazioneMessaggioId === m.id) {
+                                Eliminazione…
+                              } @else {
+                                <app-icon-trash />
+                              }
+                            </button>
+                          </div>
+                        </div>
+                        <p class="dashboard-venditore__messaggio-testo mb-0 mt-2">{{ m.testo }}</p>
+                      </article>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </section>
+      }
+
+      <section
+        class="card border-0 mb-4 dashboard-venditore__surface dashboard-venditore__account-card dashboard-venditore__dash-collapse-section"
+        aria-labelledby="dv-elimina-account-toggle"
+      >
+        <div class="card-body p-0">
+          <button
+            type="button"
+            id="dv-elimina-account-toggle"
+            class="dashboard-venditore__dash-collapse-toggle dashboard-venditore__dash-collapse-toggle--danger"
+            data-bs-toggle="collapse"
+            data-bs-target="#dv-collapse-elimina-account"
+            aria-expanded="false"
+            aria-controls="dv-collapse-elimina-account"
+          >
+            <span class="dashboard-venditore__dash-collapse-title dashboard-venditore__section-title">Elimina account</span>
+            <span class="dashboard-venditore__dash-collapse-chevron" aria-hidden="true">▾</span>
+          </button>
+          <div id="dv-collapse-elimina-account" class="collapse">
+            <div class="dashboard-venditore__dash-collapse-body">
+              <h2 id="dv-elimina-account" class="visually-hidden">Elimina account</h2>
+              <p class="small text-muted mb-3 mb-md-4">
+                Rimuove definitivamente il tuo profilo, tutti gli annunci pubblicati (foto, aste, messaggi e recensioni sugli
+                annunci) e stacca eventuali offerte date come acquirente. Non puoi annullare questa operazione.
+              </p>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-danger"
+                (click)="eliminaAccount()"
+                [disabled]="eliminazioneAccountInCorso"
+              >
+                {{ eliminazioneAccountInCorso ? 'Eliminazione…' : 'Elimina il mio account' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    }
+    }
+  </div>
+</div>

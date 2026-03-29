@@ -1,0 +1,167 @@
+<div class="register-page auth-page auth-page--register">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 auth-page__col auth-page__col--register">
+        <div class="card auth-card border-0">
+          <div class="card-body auth-card__body">
+            <h1 class="h4 text-center mb-4 auth-card__heading">Registrazione</h1>
+            @if (errorMessage) {
+              <div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+            }
+
+            <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+              <div class="row register-page__name-row g-2 g-md-3 mb-3">
+                <div class="col-md-6">
+                  <label for="reg-nome" class="form-label auth-form-label">Nome</label>
+                  <input
+                    id="reg-nome"
+                    type="text"
+                    class="form-control auth-input"
+                    formControlName="nome"
+                    autocomplete="given-name"
+                    [class.is-invalid]="showFieldError('nome')"
+                  />
+                  @if (showFieldError('nome')) {
+                    <div class="invalid-feedback d-block">Il nome è obbligatorio.</div>
+                  }
+                </div>
+                <div class="col-md-6">
+                  <label for="reg-cognome" class="form-label auth-form-label">Cognome</label>
+                  <input
+                    id="reg-cognome"
+                    type="text"
+                    class="form-control auth-input"
+                    formControlName="cognome"
+                    autocomplete="family-name"
+                    [class.is-invalid]="showFieldError('cognome')"
+                  />
+                  @if (showFieldError('cognome')) {
+                    <div class="invalid-feedback d-block">Il cognome è obbligatorio.</div>
+                  }
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="reg-email" class="form-label auth-form-label">Email</label>
+                <input
+                  id="reg-email"
+                  type="email"
+                  class="form-control auth-input"
+                  formControlName="email"
+                  autocomplete="email"
+                  [class.is-invalid]="showFieldError('email')"
+                />
+                @if (showFieldError('email')) {
+                  <div class="invalid-feedback d-block">
+                    @if (form.controls.email.errors?.['required']) {
+                      L'email è obbligatoria.
+                    } @else if (form.controls.email.errors?.['email']) {
+                      Inserisci un indirizzo email valido.
+                    }
+                  </div>
+                }
+              </div>
+
+              <div class="mb-3">
+                <label for="reg-password" class="form-label auth-form-label">Password</label>
+                <div class="auth-password-wrap">
+                  <input
+                    id="reg-password"
+                    [type]="passwordVisible ? 'text' : 'password'"
+                    class="form-control auth-input"
+                    formControlName="password"
+                    autocomplete="new-password"
+                    [class.is-invalid]="showFieldError('password')"
+                  />
+                  <button
+                    type="button"
+                    class="auth-password-toggle"
+                    (click)="passwordVisible = !passwordVisible"
+                    [attr.aria-pressed]="passwordVisible"
+                    [attr.aria-label]="passwordVisible ? 'Nascondi password' : 'Mostra password'"
+                  >
+                    @if (passwordVisible) {
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        width="20"
+                        height="20"
+                        aria-hidden="true"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"
+                        />
+                      </svg>
+                    } @else {
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        width="20"
+                        height="20"
+                        aria-hidden="true"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+                        />
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                    }
+                  </button>
+                </div>
+                @if (showFieldError('password')) {
+                  <div class="invalid-feedback d-block">
+                    @if (form.controls.password.errors?.['required']) {
+                      La password è obbligatoria.
+                    } @else if (form.controls.password.errors?.['minlength']) {
+                      La password deve avere almeno 6 caratteri.
+                    }
+                  </div>
+                }
+              </div>
+
+              <div class="mb-4">
+                <label for="reg-ruolo" class="form-label auth-form-label">Ruolo</label>
+                <select
+                  id="reg-ruolo"
+                  class="form-select auth-input auth-select"
+                  formControlName="ruolo"
+                  [class.is-invalid]="showFieldError('ruolo')"
+                >
+                  @for (r of ruoli; track r) {
+                    <option [value]="r">{{ r }}</option>
+                  }
+                </select>
+                @if (showFieldError('ruolo')) {
+                  <div class="invalid-feedback d-block">Seleziona un ruolo.</div>
+                }
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100 auth-submit" [disabled]="form.invalid">
+                Registrati
+              </button>
+            </form>
+
+            <p class="text-center auth-footer-link mt-3 mb-0">
+              Hai già un account?
+              <a routerLink="/login" class="link-primary">Accedi</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

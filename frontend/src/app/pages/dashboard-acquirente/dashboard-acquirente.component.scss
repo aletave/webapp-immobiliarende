@@ -1,0 +1,438 @@
+.dashboard-acquirente__page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3vw, 1.5rem);
+  padding-bottom: max(clamp(1.5rem, 4vw, 3rem), env(safe-area-inset-bottom, 0px));
+}
+
+.dashboard-acquirente__surface {
+  border-radius: var(--radius-card);
+  background: var(--color-surface-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.dashboard-acquirente__flash {
+  border: 0;
+  border-radius: var(--radius-card);
+  font-family: 'Outfit', sans-serif;
+  box-shadow: var(--shadow-sm);
+}
+
+.dashboard-acquirente__flash--danger {
+  border-left: 4px solid var(--color-danger);
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.08),
+    rgba(255, 255, 255, 0.98)
+  );
+  color: var(--color-text);
+}
+
+.dashboard-acquirente__header {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 1rem;
+}
+
+.dashboard-acquirente__title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  color: var(--color-primary);
+}
+
+.dashboard-acquirente__subtitle {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.02em;
+}
+
+.dashboard-acquirente__section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  color: var(--color-primary);
+}
+
+.dashboard-acquirente__section-note {
+  max-width: 22rem;
+  text-align: right;
+}
+
+.dashboard-acquirente__section-note--collapse {
+  max-width: none;
+  text-align: left;
+}
+
+@media (max-width: 575.98px) {
+  .dashboard-acquirente__section-note {
+    text-align: left;
+    max-width: none;
+  }
+}
+
+/* Sezioni collassabili (come dashboard venditore) */
+.dashboard-acquirente__dash-collapse-section {
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.dashboard-acquirente__dash-collapse-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1rem 1.25rem;
+  text-align: left;
+  background: var(--color-surface-card);
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-family: 'Outfit', sans-serif;
+  transition: background 0.15s ease;
+}
+
+.dashboard-acquirente__dash-collapse-toggle:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.dashboard-acquirente__dash-collapse-toggle:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.dashboard-acquirente__dash-collapse-toggle.collapsed {
+  border-bottom-color: transparent;
+}
+
+.dashboard-acquirente__dash-collapse-toggle--danger:hover {
+  background: rgba(185, 28, 28, 0.06);
+}
+
+.dashboard-acquirente__dash-collapse-toggle--danger .dashboard-acquirente__section-title {
+  color: #b91c1c;
+}
+
+.dashboard-acquirente__dash-collapse-toggle--danger:focus-visible {
+  outline-color: #dc2626;
+}
+
+.dashboard-acquirente__dash-collapse-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.dashboard-acquirente__dash-collapse-title.dashboard-acquirente__section-title {
+  font-size: clamp(1.05rem, 2.5vw, 1.25rem);
+  line-height: 1.25;
+}
+
+.dashboard-acquirente__dash-collapse-toggle .badge {
+  font-weight: 600;
+  font-size: 0.7rem;
+  padding: 0.35em 0.65em;
+  border-radius: 999px;
+}
+
+.dashboard-acquirente__dash-collapse-chevron {
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  line-height: 1;
+  opacity: 0.65;
+  transition: transform 0.2s ease;
+}
+
+.dashboard-acquirente__dash-collapse-toggle:not(.collapsed) .dashboard-acquirente__dash-collapse-chevron {
+  transform: rotate(180deg);
+}
+
+.dashboard-acquirente__dash-collapse-body {
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+/** Ancora per scroll da collegamento rapido (offset per navbar / safe area) */
+.dashboard-acquirente__scroll-anchor {
+  display: block;
+  height: 0;
+  width: 100%;
+  scroll-margin-top: clamp(4.5rem, 12vw, 6rem);
+}
+
+.dashboard-acquirente__dash-collapse-body .dashboard-acquirente__dash-collapse-table-wrap {
+  margin-left: -1.25rem;
+  margin-right: -1.25rem;
+  width: calc(100% + 2.5rem);
+  max-width: none;
+}
+
+@media (max-width: 575.98px) {
+  .dashboard-acquirente__dash-collapse-body .dashboard-acquirente__dash-collapse-table-wrap {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+  }
+}
+
+.dashboard-acquirente__quick-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  height: 100%;
+  min-height: 6.5rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: 16px;
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  color: inherit;
+  transition: var(--transition);
+}
+
+.dashboard-acquirente__quick-card:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
+}
+
+.dashboard-acquirente__quick-card--static {
+  cursor: default;
+}
+
+/** Pulsante come card (box «Messaggi al venditore» in alto) */
+.dashboard-acquirente__quick-card--messaggi {
+  cursor: pointer;
+  border: 1px solid var(--color-border);
+  font: inherit;
+  color: inherit;
+}
+
+.dashboard-acquirente__quick-card--messaggi:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
+}
+
+.dashboard-acquirente__quick-icon {
+  font-size: 1.25rem;
+  opacity: 0.85;
+  line-height: 1;
+}
+
+.dashboard-acquirente__quick-label {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+.dashboard-acquirente__quick-hint {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  line-height: 1.45;
+}
+
+.dashboard-acquirente__table-card {
+  background: var(--color-surface-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.dashboard-acquirente__table {
+  --bs-table-bg: transparent;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: none;
+}
+
+.dashboard-acquirente__table thead th {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+  border-bottom: 2px solid var(--color-border);
+  padding: 1rem 1.5rem;
+}
+
+.dashboard-acquirente__table tbody tr:nth-child(odd) {
+  background-color: var(--color-surface);
+}
+
+.dashboard-acquirente__table tbody tr:nth-child(even) {
+  background-color: #fff;
+}
+
+.dashboard-acquirente__table tbody tr {
+  transition: background var(--transition-fast);
+}
+
+.dashboard-acquirente__table tbody tr:hover {
+  background-color: var(--color-accent-light) !important;
+}
+
+.dashboard-acquirente__table td,
+.dashboard-acquirente__table th {
+  padding: 1rem 1.5rem;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dashboard-acquirente__link-annuncio {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.dashboard-acquirente__link-annuncio:hover {
+  text-decoration: underline;
+}
+
+.dashboard-acquirente__empty {
+  border-radius: var(--radius-card);
+  border-left: 4px solid var(--color-accent);
+}
+
+/** Striscia accento; raggio e ombra da `.dashboard-acquirente__surface`. */
+.dashboard-acquirente__account-card {
+  border-left: 4px solid var(--color-accent);
+}
+
+.dashboard-acquirente__messaggi-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.dashboard-acquirente__messaggio-card {
+  border-radius: 16px;
+}
+
+.dashboard-acquirente__messaggio-titolo {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.dashboard-acquirente__messaggio-titolo:hover {
+  text-decoration: underline;
+}
+
+.dashboard-acquirente__messaggio-testo {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--color-text);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.dashboard-acquirente__rec-card {
+  border-radius: 16px;
+}
+
+/** Testo recensione completo, a capo (niente taglio a 200 caratteri). */
+.dashboard-acquirente__rec-testo {
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.5;
+}
+
+.dashboard-acquirente__rec-titolo {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--color-primary);
+  text-decoration: none;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.dashboard-acquirente__rec-titolo:hover {
+  text-decoration: underline;
+}
+
+.dashboard-acquirente__stelle {
+  flex: 0 0 auto;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  color: var(--color-border);
+}
+
+.dashboard-acquirente__stella--on {
+  color: #d4a574;
+}
+
+@media (max-width: 767.98px) {
+  .dashboard-acquirente__table-card .table-responsive {
+    overflow-x: visible;
+  }
+
+  .dashboard-acquirente__table thead {
+    display: none;
+  }
+
+  .dashboard-acquirente__table tbody tr.dashboard-acquirente__row {
+    display: block;
+    margin-bottom: 1rem;
+    background: var(--color-surface-card) !important;
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .dashboard-acquirente__table tbody tr.dashboard-acquirente__row:last-child {
+    margin-bottom: 0;
+  }
+
+  .dashboard-acquirente__td {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem !important;
+    border-bottom: 1px solid var(--color-border) !important;
+    text-align: right !important;
+  }
+
+  .dashboard-acquirente__td:last-child {
+    border-bottom: none !important;
+  }
+
+  .dashboard-acquirente__td::before {
+    content: attr(data-label);
+    flex: 0 0 auto;
+    max-width: 42%;
+    padding-right: 0.5rem;
+    text-align: left;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+    padding-top: 0.2rem;
+  }
+
+  .dashboard-acquirente__cell-value {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    text-align: right;
+    word-break: break-word;
+  }
+
+  .dashboard-acquirente__td--titolo .dashboard-acquirente__link-annuncio {
+    text-align: right;
+    word-break: break-word;
+  }
+}
