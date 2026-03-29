@@ -2,7 +2,6 @@
 
 Piattaforma web per **annunci immobiliari** nella zona di **Rende** (Cosenza): catalogo pubblico, aree riservate per venditori e acquirenti, pannello amministratore, messaggistica, richieste di visita, aste con offerte e recensioni legate alle visite completate.
 
-Il nome è un gioco di parole tra *immobiliare* e *Rende*.
 
 **Demo online (frontend):** [https://webapp-immobiliarende.vercel.app/home](https://webapp-immobiliarende.vercel.app/home)
 
@@ -66,7 +65,7 @@ Il backend espone le API sotto il prefisso **`/api`**. Il frontend in sviluppo �
 
    > **Nota:** in un ambiente reale le credenziali andrebbero fornite solo tramite variabili d’ambiente o un secret store, non committate. Il file locale facilita la riproduzione del progetto in sede d’esame.
 
-   > **Per chi corregge il progetto:** la password PostgreSQL nel file commitato è quella della macchina dello studente. Sul vostro PC va sostituita con la password del vostro utente DB, altrimenti Spring Boot non si avvia.
+   > **Per chi corregge il progetto:** la password PostgreSQL nel file commitato è quella della mia macchina. Sul vostro PC va sostituita con la password del vostro utente DB, altrimenti Spring Boot non si avvia.
 
 3. **(Opzionale) Dati da script SQL.** Se è presente `db/dump.sql`, si può importare dopo aver creato il database:
 
