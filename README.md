@@ -4,6 +4,8 @@ Piattaforma web per **annunci immobiliari** nella zona di **Rende** (Cosenza): c
 
 Il nome è un gioco di parole tra *immobiliare* e *Rende*.
 
+**Demo online (frontend):** [https://webapp-immobiliarende.vercel.app/home](https://webapp-immobiliarende.vercel.app/home)
+
 **Corso:** Web Applications — Università della Calabria, A.A. 2025/26  
 **Tipologia:** progetto individuale — appello 31 marzo 2026  
 
